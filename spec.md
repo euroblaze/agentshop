@@ -49,3 +49,114 @@ For data storage, a small and simple database solution like SQLite will be utili
 
 #### Language and Future Scalability
 For its initial release, the shop will be available in a single language: English. However, the architecture will be designed to allow for future expansion to support multiple languages. This first version aims to establish a solid foundation, keeping possibilities open for subsequent versions with additional functionalities.
+
+# Programming Tasks
+
+## 1. Project Setup and Infrastructure
+- Set up project structure with appropriate directories (static, templates, database, config)
+- Initialize SQLite database with required tables
+- Set up configuration file for seller email and other settings
+- Create basic HTML template structure with header, footer, and navigation
+- Implement responsive CSS framework for mobile-friendly design
+
+## 2. Database Schema Design
+- Create products table (id, name, title, short_description, full_description, price, price_type, html_content, readme_link, download_link)
+- Create reviews table (id, product_id, thumbs_up_count, timestamp)
+- Create orders table (id, customer_name, email, phone, address, product_id, transaction_id, payment_processor, timestamp)
+- Create customer_sessions table (id, session_id, name, address, phone, timestamp)
+- Create inquiries table (id, product_id, customer_email, question, timestamp)
+
+## 3. Frontend Development
+- Create homepage with promotional product blocks
+- Implement header with navigation menu and search field
+- Create footer with links to static pages
+- Design product listing page with search results
+- Build individual product pages with rich content display
+- Implement customer greeting functionality using session data
+
+## 4. Product Management System
+- Create product HTML pages with SEO-optimized tags
+- Implement product image gallery and screenshot display
+- Add technical description sections with process diagrams
+- Create product README file linking system
+- Implement search functionality with product filtering
+
+## 5. Customer Review System
+- Build thumbs-up review interface with human validation
+- Create pop-up window for review submission
+- Implement CAPTCHA or simple human validation question
+- Store and display thumbs-up counts for each product
+- Add review submission without user login requirement
+
+## 6. Purchase and Payment System
+- Create purchase pop-up with customer information form
+- Implement form validation with real-time error highlighting
+- Integrate Stripe payment gateway
+- Integrate PayPal payment gateway
+- Add payment method selection interface
+- Create terms and conditions agreement checkbox
+
+## 7. Order Processing and Fulfillment
+- Build order confirmation system
+- Implement automatic customer email with download links
+- Create seller notification email system
+- Generate secure download links with expiration
+- Store transaction details and payment confirmations
+
+## 8. Installation Service Inquiry
+- Create post-purchase installation service form
+- Implement Odoo version selection with radio buttons
+- Add installation period date picker
+- Create comment field for additional requirements
+- Collect technical contact information
+- Send installation inquiry email to seller
+
+## 9. Customer Data and Session Management
+- Implement browser session storage for customer data
+- Create customer greeting system without login
+- Design customer account placeholder areas
+- Implement data persistence across sessions
+- Add customer data validation and sanitization
+
+## 10. Static Content Pages
+- Create operator details page
+- Build terms and conditions page
+- Implement privacy policy page
+- Create disclaimers page
+- Add support page with contact information
+- Ensure all static pages have clean HTML structure
+
+## 11. Product Inquiry System
+- Add "Ask a question" section to product pages
+- Implement human validation for inquiries
+- Create inquiry submission form
+- Send inquiry emails to shop operator
+- Include sender email for direct replies
+
+## 12. Error Handling and Validation
+- Implement comprehensive form validation
+- Add real-time field validation with red highlighting
+- Create user-friendly error messages
+- Handle payment failures with specific error reporting
+- Add server-side validation for all user inputs
+
+## 13. Security and Performance
+- Implement secure session management
+- Add input sanitization and XSS protection
+- Create secure download link generation
+- Implement rate limiting for forms
+- Add basic security headers
+
+## 14. Testing and Quality Assurance
+- Create unit tests for core functionality
+- Implement integration tests for payment flows
+- Test email delivery systems
+- Validate responsive design across devices
+- Perform security testing on user inputs
+
+## 15. Documentation and Deployment
+- Create installation and setup documentation
+- Write configuration guide
+- Document database schema
+- Create deployment scripts
+- Add maintenance and backup procedures
