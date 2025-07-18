@@ -70,16 +70,111 @@ For data storage, a small and simple database solution like SQLite will be utili
 #### Language and Future Scalability
 For its initial release, the shop will be available in a single language: English. However, the architecture will be designed to allow for future expansion to support multiple languages. This first version aims to establish a solid foundation, keeping possibilities open for subsequent versions with additional functionalities.
 
+#### ORM Layer Architecture
+The shop will implement a comprehensive Object-Relational Mapping (ORM) layer to facilitate seamless communication between the TypeScript frontend and the Python backend. This ORM layer will be implemented in Python and will serve as the primary interface for all database operations and business logic.
+
+##### ORM Structure and Components
+The ORM layer will be built using Python's SQLAlchemy framework, providing a robust and scalable foundation for data management. The ORM will consist of several key components:
+
+- **Model Definitions**: Python classes that represent database tables including Products, Customers, Orders, Reviews, Inquiries, and Configuration settings
+- **Data Access Layer**: Repository pattern implementation for each model providing CRUD operations, complex queries, and business logic
+- **API Serializers**: JSON serialization and deserialization for communication with the TypeScript frontend
+- **Validation Layer**: Data validation and business rule enforcement before database operations
+- **Migration System**: Database schema versioning and migration management
+
+##### Database Connection and Session Management
+The ORM will handle database connections through SQLAlchemy's session management system. Connection pooling will be implemented to ensure optimal performance under concurrent user loads. All database operations will be wrapped in appropriate transaction boundaries to maintain data integrity.
+
+##### Frontend-Backend Communication
+The TypeScript frontend will communicate with the Python backend through RESTful API endpoints. The ORM layer will expose these endpoints using a Python web framework (Flask or FastAPI), with each endpoint corresponding to specific business operations:
+
+- **Product Operations**: Retrieve product listings, search products, get product details
+- **Customer Operations**: User registration, authentication, profile management, order history
+- **Order Operations**: Create orders, process payments, track order status
+- **Review Operations**: Submit reviews, retrieve review counts
+- **Admin Operations**: Manage products, customers, orders, and configuration settings
+
+##### Data Models and Relationships
+The ORM will define clear relationships between entities:
+- One-to-many relationships between Customers and Orders
+- Many-to-many relationships between Products and Orders
+- One-to-many relationships between Products and Reviews
+- Foreign key constraints to maintain referential integrity
+
+##### Security and Performance Considerations
+The ORM layer will implement several security measures:
+- SQL injection prevention through parameterized queries
+- Input sanitization and validation
+- Secure session management with token-based authentication
+- Rate limiting for API endpoints
+- Encrypted storage of sensitive data
+
+Performance optimizations will include:
+- Lazy loading for related objects
+- Query optimization and indexing
+- Caching layer for frequently accessed data
+- Database connection pooling
+
+##### API Response Format
+All API responses will follow a consistent JSON format:
+```json
+{
+  "success": boolean,
+  "data": object|array,
+  "message": string,
+  "errors": array
+}
+```
+
+This standardized format ensures predictable communication between the frontend and backend, simplifying error handling and data processing on the TypeScript side.
+
 # Programming Tasks
 
-## 1. Project Setup and Infrastructure
-- Set up project structure with appropriate directories (static, templates, database, config)
-- Initialize SQLite database with required tables
+## 1. ORM Layer Implementation
+- Set up SQLAlchemy ORM with SQLite database connection
+- Create base model class with common fields (id, created_at, updated_at)
+- Implement Product model with all required fields and relationships
+- Create Customer model with authentication and profile fields
+- Build Order model with payment and fulfillment tracking
+- Implement Review model for thumbs-up functionality
+- Create Inquiry model for customer questions
+- Build AdminUser model for backend access
+- Implement ConfigSetting model for dynamic configuration
+- Create SupportRequest model for customer service
+- Set up database migration system using Alembic
+- Implement connection pooling and session management
+- Create repository pattern classes for each model
+- Build data validation layer with business rules
+- Implement JSON serializers for API communication
+
+## 2. API Endpoint Development
+- Create Flask/FastAPI application structure
+- Implement authentication middleware for API endpoints
+- Build product API endpoints (GET, POST, PUT, DELETE)
+- Create customer API endpoints for registration and profile management
+- Implement order API endpoints for purchase workflow
+- Build review API endpoints for thumbs-up functionality
+- Create inquiry API endpoints for customer questions
+- Implement admin API endpoints for backend management
+- Add search API endpoints with filtering capabilities
+- Create configuration API endpoints for settings management
+- Implement file upload API for product images
+- Build analytics API endpoints for admin dashboard
+- Add rate limiting middleware for API protection
+- Implement CORS configuration for frontend communication
+- Create API documentation with OpenAPI/Swagger
+
+## 3. Project Setup and Infrastructure
+- Set up project structure with appropriate directories (static, templates, database, config, orm)
+- Initialize SQLite database with required tables through ORM migrations
 - Set up configuration file for seller email and other settings
 - Create basic HTML template structure with header, footer, and navigation
 - Implement responsive CSS framework for mobile-friendly design
+- Set up Python virtual environment and dependencies
+- Configure TypeScript build system for frontend
+- Set up API client library for frontend-backend communication
 
-## 2. Database Schema Design
+## 4. Database Schema Design
 - Create products table (id, name, title, short_description, full_description, price, price_type, html_content, readme_link, download_link)
 - Create reviews table (id, product_id, thumbs_up_count, timestamp)
 - Create orders table (id, customer_id, product_id, transaction_id, payment_processor, status, timestamp)
@@ -91,7 +186,7 @@ For its initial release, the shop will be available in a single language: Englis
 - Create support_requests table (id, customer_id, order_id, type, message, status, created_at)
 - Create config_settings table (id, key, value, description, updated_at)
 
-## 3. Frontend Development
+## 5. Frontend Development
 - Create homepage with promotional product blocks
 - Implement header with navigation menu and search field
 - Create footer with links to static pages
@@ -99,21 +194,21 @@ For its initial release, the shop will be available in a single language: Englis
 - Build individual product pages with rich content display
 - Implement customer greeting functionality using session data
 
-## 4. Product Management System
+## 6. Product Management System
 - Create product HTML pages with SEO-optimized tags
 - Implement product image gallery and screenshot display
 - Add technical description sections with process diagrams
 - Create product README file linking system
 - Implement search functionality with product filtering
 
-## 5. Customer Review System
+## 7. Customer Review System
 - Build thumbs-up review interface with human validation
 - Create pop-up window for review submission
 - Implement CAPTCHA or simple human validation question
 - Store and display thumbs-up counts for each product
 - Add review submission without user login requirement
 
-## 6. Purchase and Payment System
+## 8. Purchase and Payment System
 - Create purchase pop-up with customer information form
 - Implement form validation with real-time error highlighting
 - Integrate Stripe payment gateway
@@ -121,14 +216,14 @@ For its initial release, the shop will be available in a single language: Englis
 - Add payment method selection interface
 - Create terms and conditions agreement checkbox
 
-## 7. Order Processing and Fulfillment
+## 9. Order Processing and Fulfillment
 - Build order confirmation system
 - Implement automatic customer email with download links
 - Create seller notification email system
 - Generate secure download links with expiration
 - Store transaction details and payment confirmations
 
-## 8. Installation Service Inquiry
+## 10. Installation Service Inquiry
 - Create post-purchase installation service form
 - Implement Odoo version selection with radio buttons
 - Add installation period date picker
@@ -136,7 +231,7 @@ For its initial release, the shop will be available in a single language: Englis
 - Collect technical contact information
 - Send installation inquiry email to seller
 
-## 9. Customer Account System
+## 11. Customer Account System
 - Build customer registration and login system
 - Create customer dashboard with order history
 - Implement password reset functionality via email
@@ -146,7 +241,7 @@ For its initial release, the shop will be available in a single language: Englis
 - Implement return request functionality
 - Add secure session management for customer accounts
 
-## 10. Static Content Pages
+## 12. Static Content Pages
 - Create operator details page
 - Build terms and conditions page
 - Implement privacy policy page
@@ -154,54 +249,54 @@ For its initial release, the shop will be available in a single language: Englis
 - Add support page with contact information
 - Ensure all static pages have clean HTML structure
 
-## 11. Product Inquiry System
+## 13. Product Inquiry System
 - Add "Ask a question" section to product pages
 - Implement human validation for inquiries
 - Create inquiry submission form
 - Send inquiry emails to shop operator
 - Include sender email for direct replies
 
-## 12. Error Handling and Validation
+## 14. Error Handling and Validation
 - Implement comprehensive form validation
 - Add real-time field validation with red highlighting
 - Create user-friendly error messages
 - Handle payment failures with specific error reporting
 - Add server-side validation for all user inputs
 
-## 13. Security and Performance
+## 15. Security and Performance
 - Implement secure session management
 - Add input sanitization and XSS protection
 - Create secure download link generation
 - Implement rate limiting for forms
 - Add basic security headers
 
-## 14. Testing and Quality Assurance
+## 16. Testing and Quality Assurance
 - Create unit tests for core functionality
 - Implement integration tests for payment flows
 - Test email delivery systems
 - Validate responsive design across devices
 - Perform security testing on user inputs
 
-## 15. Admin Backend System
+## 17. Admin Backend System
 - Build admin authentication and login system
 - Create admin dashboard with analytics overview
 - Implement customer management interface
 - Add order management and tracking system
 - Create product management with content editor
-- Build simple HDMI editor for content management
+- Build simple HTML editor for content management
 - Implement configuration settings management
 - Add customer support request management
 - Create return request processing interface
 - Build admin session management and security
 
-## 16. Configuration Management
+## 18. Configuration Management
 - Migrate configuration from files to database
 - Create admin interface for configuration settings
 - Implement secure storage of sensitive settings
 - Add configuration backup and restore functionality
 - Create configuration validation and defaults
 
-## 17. Documentation and Deployment
+## 19. Documentation and Deployment
 - Create installation and setup documentation
 - Write configuration guide
 - Document database schema
