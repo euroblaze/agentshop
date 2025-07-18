@@ -35,8 +35,16 @@ This installation service inquiry, if completed, will also trigger an email to t
 #### Order Fulfillment and Communication
 Following a successful order, an email will be automatically sent to the customer. This email will confirm that their order has been successfully processed and payment received. Crucially, it will also include a link to download the purchased software. These download links will be securely stored in a simple backend database. Additionally, an email containing the customer's data, the product number, payment confirmation transaction number, and payment processor information will be sent to the seller's designated email address, which will be stored in a configuration file.
 
-#### Customer Data Persistence and Personalization
-For enhanced user experience, if a user provides their name, address, and phone number during a purchase, this information will be stored in their browser session. Upon their return to the website, the system will use this stored data to greet them personally in the header's top-right corner, for example, "Hello [First Name] [Last Name]". While this version does not include a login feature, dedicated whitespace will be reserved in the design for the future integration of customer accounts.
+#### Customer Account System
+The shop will feature a comprehensive customer account system. Customers can create accounts, log in, and access a personalized dashboard. In their account area, customers can:
+- View their order history and order details
+- Re-order previously purchased products
+- File returns or customer support requests
+- Reset their password via email
+- Update their profile information
+- Log in and log out securely
+
+Customer account information will be stored in the SQLite database, with secure password hashing and session management.
 
 #### Product Resources and Static Content
 Each product description page will include a link to its corresponding README file, with these links also stored in the database for easy management. Beyond product pages, the shop will host various static content pages in a separate directory. These will include essential information such as operator details, terms and conditions, disclaimers, privacy policy, and a support page. All static content pages will also be structured with clean, simple HTML for optimal readability.
@@ -44,8 +52,20 @@ Each product description page will include a link to its corresponding README fi
 #### Customer Inquiry Feature
 At the bottom of each product description page, there will be a simple "Ask a question about the product" section. This feature will also incorporate human validation. Once a question is submitted, an email will be sent to the shop operator, including the sender's email address, enabling the operator to reply directly.
 
+#### Admin Backend System
+The shop will include a comprehensive admin backend accessible only to the shop owner. After logging in with secure admin credentials, the owner can:
+- View and manage all customers and their details
+- View and manage all orders with full order information
+- Browse a complete list of products with the ability to click and view detailed product descriptions
+- Access content management pages with a simple HDMI editor supporting minimal formatting
+- Manage configuration settings through a web interface
+- View sales analytics and customer support requests
+- Manage returns and customer inquiries
+
+The admin area will be protected by secure authentication and provide a clean, intuitive interface for shop management.
+
 #### Database and Technical Considerations
-For data storage, a small and simple database solution like SQLite will be utilized. During the order process, it is mandatory for the customer to agree to the terms and conditions. All required fields in the purchase pop-up will be validated; any missing or invalid fields will be immediately highlighted in red with a short message prompting the user to correct them.
+For data storage, a small and simple database solution like SQLite will be utilized. All configuration variables, previously stored in configuration files, are now centralized in the SQLite database and manageable through the admin backend. During the order process, it is mandatory for the customer to agree to the terms and conditions. All required fields in the purchase pop-up will be validated; any missing or invalid fields will be immediately highlighted in red with a short message prompting the user to correct them.
 
 #### Language and Future Scalability
 For its initial release, the shop will be available in a single language: English. However, the architecture will be designed to allow for future expansion to support multiple languages. This first version aims to establish a solid foundation, keeping possibilities open for subsequent versions with additional functionalities.
@@ -62,9 +82,14 @@ For its initial release, the shop will be available in a single language: Englis
 ## 2. Database Schema Design
 - Create products table (id, name, title, short_description, full_description, price, price_type, html_content, readme_link, download_link)
 - Create reviews table (id, product_id, thumbs_up_count, timestamp)
-- Create orders table (id, customer_name, email, phone, address, product_id, transaction_id, payment_processor, timestamp)
-- Create customer_sessions table (id, session_id, name, address, phone, timestamp)
+- Create orders table (id, customer_id, product_id, transaction_id, payment_processor, status, timestamp)
+- Create customers table (id, email, password_hash, first_name, last_name, phone, address, created_at, last_login)
+- Create customer_sessions table (id, customer_id, session_token, expires_at, created_at)
 - Create inquiries table (id, product_id, customer_email, question, timestamp)
+- Create admin_users table (id, username, password_hash, email, created_at, last_login)
+- Create admin_sessions table (id, admin_id, session_token, expires_at, created_at)
+- Create support_requests table (id, customer_id, order_id, type, message, status, created_at)
+- Create config_settings table (id, key, value, description, updated_at)
 
 ## 3. Frontend Development
 - Create homepage with promotional product blocks
@@ -111,12 +136,15 @@ For its initial release, the shop will be available in a single language: Englis
 - Collect technical contact information
 - Send installation inquiry email to seller
 
-## 9. Customer Data and Session Management
-- Implement browser session storage for customer data
-- Create customer greeting system without login
-- Design customer account placeholder areas
-- Implement data persistence across sessions
-- Add customer data validation and sanitization
+## 9. Customer Account System
+- Build customer registration and login system
+- Create customer dashboard with order history
+- Implement password reset functionality via email
+- Add customer profile management
+- Create re-order functionality for past purchases
+- Build customer support request system
+- Implement return request functionality
+- Add secure session management for customer accounts
 
 ## 10. Static Content Pages
 - Create operator details page
@@ -154,7 +182,26 @@ For its initial release, the shop will be available in a single language: Englis
 - Validate responsive design across devices
 - Perform security testing on user inputs
 
-## 15. Documentation and Deployment
+## 15. Admin Backend System
+- Build admin authentication and login system
+- Create admin dashboard with analytics overview
+- Implement customer management interface
+- Add order management and tracking system
+- Create product management with content editor
+- Build simple HDMI editor for content management
+- Implement configuration settings management
+- Add customer support request management
+- Create return request processing interface
+- Build admin session management and security
+
+## 16. Configuration Management
+- Migrate configuration from files to database
+- Create admin interface for configuration settings
+- Implement secure storage of sensitive settings
+- Add configuration backup and restore functionality
+- Create configuration validation and defaults
+
+## 17. Documentation and Deployment
 - Create installation and setup documentation
 - Write configuration guide
 - Document database schema
