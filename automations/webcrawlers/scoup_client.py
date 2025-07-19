@@ -512,7 +512,7 @@ async def example_usage():
         
         print(f"Scraped {len(results)} pages")
         for result in results:
-            print(f"  {result.url}: {'✅' if result.success else '❌'}")
+            print(f"  {result.url}: {'[SUCCESS]' if result.success else '[FAILED]'}")
 
 
 if __name__ == "__main__":

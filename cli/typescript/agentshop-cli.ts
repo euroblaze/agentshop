@@ -154,13 +154,13 @@ llmCommand
       }
 
       for (const provider of providers) {
-        const statusIcon = provider.is_healthy ? '✅' : '❌';
+        const statusIcon = provider.is_healthy ? '[OK]' : '[ERROR]';
         const enabledIcon = provider.is_enabled ? '🟢' : '🔴';
         
         console.log(`${statusIcon} ${enabledIcon} ${chalk.bold(provider.provider.toUpperCase())}`);
         console.log(`   Enabled: ${provider.is_enabled ? chalk.green('Yes') : chalk.red('No')}`);
         console.log(`   Healthy: ${provider.is_healthy ? chalk.green('Yes') : chalk.red('No')}`);
-        console.log(`   API Key: ${provider.api_key_configured ? '✅' : '❌'}`);
+        console.log(`   API Key: ${provider.api_key_configured ? '[OK]' : '[ERROR]'}`);
         console.log(`   Default Model: ${provider.default_model || 'Not set'}`);
         console.log(
           `   Daily Cost: $${provider.current_daily_cost.toFixed(4)} / $${provider.daily_cost_limit.toFixed(2)}`
@@ -217,7 +217,7 @@ llmCommand
       const stats = await cli.getUsageStats(parseInt(options.days), options.provider);
       spinner.stop();
 
-      console.log(chalk.blue.bold(`\n📊 LLM Usage Statistics (Last ${options.days} days)`));
+      console.log(chalk.blue.bold(`\n[STATS] LLM Usage Statistics (Last ${options.days} days)`));
       console.log('='.repeat(60));
 
       if (stats.length === 0) {
@@ -271,10 +271,10 @@ llmCommand
       console.log('='.repeat(50));
       console.log(chalk.bold('Prompt:'), prompt);
       console.log();
-      console.log(chalk.green.bold('✅ Response:'));
+      console.log(chalk.green.bold('[OK] Response:'));
       console.log(result.content);
       console.log();
-      console.log(chalk.blue.bold('📊 Stats:'));
+      console.log(chalk.blue.bold('[STATS] Stats:'));
       console.log(`   Provider: ${result.provider}`);
       console.log(`   Model: ${result.model}`);
       console.log(`   Tokens: ${result.tokens_used}`);
@@ -300,7 +300,7 @@ llmCommand
       console.log('='.repeat(50));
 
       for (const [provider, healthy] of Object.entries(health)) {
-        const icon = healthy ? '✅' : '❌';
+        const icon = healthy ? '[OK]' : '[ERROR]';
         const status = healthy ? chalk.green('Healthy') : chalk.red('Unhealthy');
         console.log(`${icon} ${chalk.bold(provider.toUpperCase())}: ${status}`);
       }
@@ -358,13 +358,13 @@ program
   .command('setup')
   .description('Interactive setup wizard')
   .action(async () => {
-    console.log(chalk.blue.bold('\n🚀 AgentShop Setup Wizard'));
+    console.log(chalk.blue.bold('\n[SETUP] AgentShop Setup Wizard'));
     console.log('='.repeat(50));
 
     try {
       const connected = await cli.checkConnection();
       if (!connected) {
-        console.log(chalk.red('❌ Cannot connect to AgentShop API. Please start the server first.'));
+        console.log(chalk.red('[ERROR] Cannot connect to AgentShop API. Please start the server first.'));
         process.exit(1);
       }
 
@@ -394,7 +394,7 @@ program
             },
           ]);
           
-          console.log(chalk.green(`✅ Ollama configured with URL: ${ollamaConfig.baseUrl}`));
+          console.log(chalk.green(`[OK] Ollama configured with URL: ${ollamaConfig.baseUrl}`));
         } else {
           const providerConfig = await inquirer.prompt([
             {
@@ -442,18 +442,18 @@ program
       spinner.stop();
 
       if (connected) {
-        console.log(`✅ API Server: ${chalk.green('Connected')} (${cli.baseUrl})`);
+        console.log(`[OK] API Server: ${chalk.green('Connected')} (${cli.baseUrl})`);
         
         // Check LLM providers
         const health = await cli.healthCheck();
         console.log('\n🤖 LLM Providers:');
         
         for (const [provider, healthy] of Object.entries(health)) {
-          const icon = healthy ? '✅' : '❌';
+          const icon = healthy ? '[OK]' : '[ERROR]';
           console.log(`   ${icon} ${provider.toUpperCase()}`);
         }
       } else {
-        console.log(`❌ API Server: ${chalk.red('Disconnected')}`);
+        console.log(`[ERROR] API Server: ${chalk.red('Disconnected')}`);
         console.log(chalk.yellow('Please ensure the backend server is running.'));
       }
     } catch (error: any) {
@@ -492,7 +492,7 @@ async function main() {
   try {
     await program.parseAsync(process.argv);
   } catch (error: any) {
-    console.error(chalk.red(`❌ Error: ${error.message}`));
+    console.error(chalk.red(`[ERROR] Error: ${error.message}`));
     process.exit(1);
   }
 }

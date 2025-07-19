@@ -54,13 +54,13 @@ def providers():
             return
         
         for provider in providers:
-            status_icon = "✅" if provider.is_healthy else "❌"
+            status_icon = "[OK]" if provider.is_healthy else "[ERROR]"
             enabled_icon = "🟢" if provider.is_enabled else "🔴"
             
             click.echo(f"{status_icon} {enabled_icon} {provider.provider.upper()}")
             click.echo(f"   Enabled: {provider.is_enabled}")
             click.echo(f"   Healthy: {provider.is_healthy}")
-            click.echo(f"   API Key: {'✅' if provider.api_key_configured else '❌'}")
+            click.echo(f"   API Key: {'[OK]' if provider.api_key_configured else '[ERROR]'}")
             click.echo(f"   Default Model: {provider.default_model or 'Not set'}")
             click.echo(f"   Daily Cost: ${provider.current_daily_cost:.4f} / ${provider.daily_cost_limit:.2f}")
             if provider.last_error:
@@ -68,7 +68,7 @@ def providers():
             click.echo()
             
     except Exception as e:
-        click.echo(f"❌ Error: {e}", err=True)
+        click.echo(f"[ERROR] Error: {e}", err=True)
 
 
 @llm.command()
@@ -79,7 +79,7 @@ def providers():
 def enable(provider: str, api_key: str, model: Optional[str], cost_limit: float):
     """Enable an LLM provider"""
     try:
-        click.echo(f"🔧 Enabling {provider.upper()} provider...")
+        click.echo(f"[SETUP] Enabling {provider.upper()} provider...")
         
         config_manager.enable_provider(
             provider,
@@ -88,13 +88,13 @@ def enable(provider: str, api_key: str, model: Optional[str], cost_limit: float)
             cost_limit_daily=cost_limit
         )
         
-        click.echo(f"✅ {provider.upper()} provider enabled successfully!")
+        click.echo(f"[OK] {provider.upper()} provider enabled successfully!")
         if model:
             click.echo(f"   Default model: {model}")
         click.echo(f"   Daily cost limit: ${cost_limit:.2f}")
         
     except Exception as e:
-        click.echo(f"❌ Error enabling provider: {e}", err=True)
+        click.echo(f"[ERROR] Error enabling provider: {e}", err=True)
 
 
 @llm.command()
@@ -102,12 +102,12 @@ def enable(provider: str, api_key: str, model: Optional[str], cost_limit: float)
 def disable(provider: str):
     """Disable an LLM provider"""
     try:
-        click.echo(f"⏸️ Disabling {provider.upper()} provider...")
+        click.echo(f"[DISABLE] Disabling {provider.upper()} provider...")
         config_manager.disable_provider(provider)
-        click.echo(f"✅ {provider.upper()} provider disabled successfully!")
+        click.echo(f"[OK] {provider.upper()} provider disabled successfully!")
         
     except Exception as e:
-        click.echo(f"❌ Error disabling provider: {e}", err=True)
+        click.echo(f"[ERROR] Error disabling provider: {e}", err=True)
 
 
 @llm.command()
@@ -115,7 +115,7 @@ def disable(provider: str):
 @click.option('--provider', help='Filter by specific provider')
 def stats(days: int, provider: Optional[str]):
     """Show LLM usage statistics"""
-    click.echo(f"📊 LLM Usage Statistics (Last {days} days)")
+    click.echo(f"[STATS] LLM Usage Statistics (Last {days} days)")
     click.echo("=" * 60)
     
     try:
@@ -156,7 +156,7 @@ def stats(days: int, provider: Optional[str]):
             click.echo()
             
     except Exception as e:
-        click.echo(f"❌ Error: {e}", err=True)
+        click.echo(f"[ERROR] Error: {e}", err=True)
 
 
 @llm.command()
@@ -182,10 +182,10 @@ def test(prompt: str, provider: str, model: Optional[str], temperature: float, m
                 request_type='cli_test'
             )
             
-            click.echo(f"✅ Response:")
+            click.echo(f"[OK] Response:")
             click.echo(f"{result['content']}")
             click.echo()
-            click.echo(f"📊 Stats:")
+            click.echo(f"[STATS] Stats:")
             click.echo(f"   Provider: {result['provider']}")
             click.echo(f"   Model: {result['model']}")
             click.echo(f"   Tokens: {result['tokens_used']}")
@@ -194,7 +194,7 @@ def test(prompt: str, provider: str, model: Optional[str], temperature: float, m
             click.echo(f"   Cached: {result['cached']}")
             
         except Exception as e:
-            click.echo(f"❌ Test failed: {e}", err=True)
+            click.echo(f"[ERROR] Test failed: {e}", err=True)
     
     asyncio.run(run_test())
 
@@ -231,10 +231,10 @@ def backup(backup_dir: str):
         
         conn.close()
         
-        click.echo(f"✅ Database backed up to: {backup_file}")
+        click.echo(f"[OK] Database backed up to: {backup_file}")
         
     except Exception as e:
-        click.echo(f"❌ Backup failed: {e}", err=True)
+        click.echo(f"[ERROR] Backup failed: {e}", err=True)
 
 
 @db.command()
@@ -243,13 +243,13 @@ def backup(backup_dir: str):
 def restore(backup_file: str, confirm: bool):
     """Restore database from backup"""
     if not confirm:
-        click.echo("⚠️  This will overwrite the current database!")
+        click.echo("[WARNING]  This will overwrite the current database!")
         click.echo("Use --confirm flag to proceed.")
         return
     
     try:
         if not os.path.exists(backup_file):
-            click.echo(f"❌ Backup file not found: {backup_file}")
+            click.echo(f"[ERROR] Backup file not found: {backup_file}")
             return
         
         db_path = os.getenv('DATABASE_URL', 'sqlite:///agentshop.db').replace('sqlite:///', '')
@@ -263,10 +263,10 @@ def restore(backup_file: str, confirm: bool):
         conn.executescript(sql_script)
         conn.close()
         
-        click.echo(f"✅ Database restored from: {backup_file}")
+        click.echo(f"[OK] Database restored from: {backup_file}")
         
     except Exception as e:
-        click.echo(f"❌ Restore failed: {e}", err=True)
+        click.echo(f"[ERROR] Restore failed: {e}", err=True)
 
 
 @db.command()
@@ -275,10 +275,10 @@ def migrate():
     try:
         from orm.base_model import db_manager
         db_manager.create_tables()
-        click.echo("✅ Database migrations completed successfully!")
+        click.echo("[OK] Database migrations completed successfully!")
         
     except Exception as e:
-        click.echo(f"❌ Migration failed: {e}", err=True)
+        click.echo(f"[ERROR] Migration failed: {e}", err=True)
 
 
 # =============================================================================
@@ -315,7 +315,7 @@ def cleanup(days: int, dry_run: bool):
             click.echo(f"Deleted {len(old_requests)} old LLM requests")
             
     except Exception as e:
-        click.echo(f"❌ Cleanup failed: {e}", err=True)
+        click.echo(f"[ERROR] Cleanup failed: {e}", err=True)
 
 
 @data.command()
@@ -345,10 +345,10 @@ def export(format: str, output: Optional[str]):
                     for stat in stats:
                         writer.writerow(stat.to_dict())
         
-        click.echo(f"✅ Data exported to: {output}")
+        click.echo(f"[OK] Data exported to: {output}")
         
     except Exception as e:
-        click.echo(f"❌ Export failed: {e}", err=True)
+        click.echo(f"[ERROR] Export failed: {e}", err=True)
 
 
 # =============================================================================
@@ -377,14 +377,14 @@ def list_jobs():
 @click.option('--schedule', help='Cron schedule expression')
 def create_job(job_name: str, target_url: str, job_type: str, schedule: Optional[str]):
     """Create a new automation job"""
-    click.echo(f"🔧 Creating job: {job_name}")
+    click.echo(f"[SETUP] Creating job: {job_name}")
     click.echo(f"Target URL: {target_url}")
     click.echo(f"Job Type: {job_type}")
     if schedule:
         click.echo(f"Schedule: {schedule}")
     
     # Implementation would create job in webcrawler_jobs table
-    click.echo("✅ Job created successfully!")
+    click.echo("[OK] Job created successfully!")
 
 
 # =============================================================================
@@ -394,7 +394,7 @@ def create_job(job_name: str, target_url: str, job_type: str, schedule: Optional
 @cli.command()
 def config():
     """Show current configuration"""
-    click.echo("⚙️  AgentShop Configuration")
+    click.echo("[CONFIG]  AgentShop Configuration")
     click.echo("=" * 50)
     
     try:
@@ -410,13 +410,13 @@ def config():
         for provider, config in safe_config['providers'].items():
             enabled_icon = "🟢" if config['enabled'] else "🔴"
             click.echo(f"  {enabled_icon} {provider.upper()}")
-            click.echo(f"     API Key: {'✅' if config['api_key'] != 'None' else '❌'}")
+            click.echo(f"     API Key: {'[OK]' if config['api_key'] != 'None' else '[ERROR]'}")
             if config['default_model']:
                 click.echo(f"     Model: {config['default_model']}")
             click.echo(f"     Cost Limit: ${config['cost_limit_daily']}/day")
             
     except Exception as e:
-        click.echo(f"❌ Error: {e}", err=True)
+        click.echo(f"[ERROR] Error: {e}", err=True)
 
 
 @cli.command()
@@ -429,13 +429,13 @@ def status():
         # Database status
         from orm.base_model import db_manager
         db_manager.get_session().close()
-        click.echo("✅ Database: Connected")
+        click.echo("[OK] Database: Connected")
         
         # LLM providers status
         asyncio.run(_check_llm_health())
         
     except Exception as e:
-        click.echo(f"❌ System check failed: {e}", err=True)
+        click.echo(f"[ERROR] System check failed: {e}", err=True)
 
 
 async def _check_llm_health():
@@ -444,10 +444,10 @@ async def _check_llm_health():
         health = await llm_orm_service.health_check()
         click.echo("\n🤖 LLM Providers:")
         for provider, healthy in health.items():
-            status_icon = "✅" if healthy else "❌"
+            status_icon = "[OK]" if healthy else "[ERROR]"
             click.echo(f"   {status_icon} {provider.upper()}")
     except Exception as e:
-        click.echo(f"❌ LLM health check failed: {e}")
+        click.echo(f"[ERROR] LLM health check failed: {e}")
 
 
 if __name__ == '__main__':

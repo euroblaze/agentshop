@@ -85,7 +85,7 @@ class EmailNotifier:
         """Get default email templates"""
         return {
             'automation_success': {
-                'subject': '✅ Automation Task Completed: {task_name}',
+                'subject': ' Automation Task Completed: {task_name}',
                 'html': '''
                 <h2>Automation Task Completed Successfully</h2>
                 <p><strong>Task:</strong> {task_name}</p>
@@ -111,7 +111,7 @@ AgentShop Automation System
                 '''
             },
             'automation_error': {
-                'subject': '❌ Automation Task Failed: {task_name}',
+                'subject': ' Automation Task Failed: {task_name}',
                 'html': '''
                 <h2>Automation Task Failed</h2>
                 <p><strong>Task:</strong> {task_name}</p>
@@ -139,7 +139,7 @@ AgentShop Automation System
                 '''
             },
             'weekly_report': {
-                'subject': '📊 Weekly Automation Report - {week_ending}',
+                'subject': ' Weekly Automation Report - {week_ending}',
                 'html': '''
                 <h2>Weekly Automation Report</h2>
                 <p><strong>Week ending:</strong> {week_ending}</p>
@@ -497,9 +497,9 @@ AgentShop Automation System
         success = self.send_email_sync(test_message)
         
         if success:
-            print("✅ Test email sent successfully!")
+            print(" Test email sent successfully!")
         else:
-            print("❌ Failed to send test email. Please check your configuration.")
+            print(" Failed to send test email. Please check your configuration.")
         
         return success
 

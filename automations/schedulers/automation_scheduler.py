@@ -467,12 +467,12 @@ async def main():
         create_default_tasks(scheduler)
     
     # Show current tasks
-    print("📋 Scheduled Tasks:")
+    print("Scheduled Tasks:")
     print("=" * 50)
     
     status = scheduler.get_task_status()
     for task in status:
-        status_icon = "✅" if task['is_active'] else "⏸️"
+        status_icon = "[ACTIVE]" if task['is_active'] else "[PAUSED]"
         print(f"{status_icon} {task['name']}")
         print(f"   Type: {task['task_type']}")
         print(f"   Schedule: {task['schedule']}")

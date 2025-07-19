@@ -24,13 +24,13 @@ automations/
 
 ## Features
 
-### 🕷️ Web Crawling
+### Web Crawling
 - **Scoup Integration**: Connect to the Scoup microservice for advanced web scraping
 - **Preset Configurations**: Ready-to-use configs for e-commerce, blogs, social media
 - **Batch Processing**: Scrape multiple URLs with controlled concurrency
 - **Data Storage**: Automatic saving to data lake with organized structure
 
-### ⏰ Scheduling
+### Scheduling
 - **Cron-like Scheduling**: Support for daily, weekly, hourly, and custom schedules
 - **Task Management**: Add, remove, update, and monitor scheduled tasks
 - **Error Handling**: Comprehensive error tracking and retry mechanisms
@@ -43,7 +43,7 @@ automations/
 - **Summarization**: Generate concise summaries of large content
 - **Keyword Extraction**: Identify important keywords and phrases
 
-### 📧 Notifications
+###  Notifications
 - **Multi-channel**: Email, Slack, webhooks, and custom integrations
 - **Event-driven**: Trigger notifications based on automation events
 - **Templates**: Customizable notification templates
@@ -278,7 +278,7 @@ for task in status:
 # Check Scoup service health
 async with ScoupClient() as client:
     healthy = await client.health_check()
-    print(f"Scoup service: {'✅' if healthy else '❌'}")
+    print(f"Scoup service: {'[HEALTHY]' if healthy else '[DOWN]'}")
 
 # Check LLM processor health
 processor = LLMDataProcessor()

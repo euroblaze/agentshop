@@ -4,10 +4,10 @@ AgentShop now supports Groq for ultra-fast LLM inference using their Language Pr
 
 ## Features
 
-✅ **Ultra-Fast Inference** - Groq's LPUs provide extremely fast token generation  
-✅ **Multiple Models** - Support for Llama, Mixtral, and Gemma models  
-✅ **Cost-Effective** - Competitive pricing with transparent cost tracking  
-✅ **Full Integration** - Works with all AgentShop features (chat, comparison, analytics)  
+ **Ultra-Fast Inference** - Groq's LPUs provide extremely fast token generation  
+ **Multiple Models** - Support for Llama, Mixtral, and Gemma models  
+ **Cost-Effective** - Competitive pricing with transparent cost tracking  
+ **Full Integration** - Works with all AgentShop features (chat, comparison, analytics)  
 
 ## Supported Models
 
@@ -261,9 +261,9 @@ Expected output:
 ```
 🧪 Testing Groq Provider Integration
 ==================================================
-🔧 Initializing Groq provider...
-✅ Validating configuration...
-📋 Getting available models...
+ Initializing Groq provider...
+ Validating configuration...
+ Getting available models...
    Available models: 12
    - llama2-70b-4096
    - llama3-8b-8192
@@ -272,12 +272,12 @@ Expected output:
    - gemma-7b-it
    ... and 7 more
 
-💰 Testing cost estimation...
+ Testing cost estimation...
    Estimated cost for test request: $0.00000001
 
-🚀 Testing text generation...
+ Testing text generation...
    Prompt: 'Write a short greeting in one sentence.'
-   ✅ Generation successful!
+    Generation successful!
    Response: Hello! I'm here to help you with any questions or tasks you might have.
    Provider: groq
    Model: llama3-8b-8192
@@ -313,10 +313,10 @@ curl -H "Authorization: Bearer $LLM_GROQ_API_KEY" \
 
 | Feature | Groq | OpenAI | Claude | Ollama |
 |---------|------|--------|--------|---------|
-| Speed | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐ |
-| Cost | ⭐⭐⭐⭐ | ⭐⭐ | ⭐⭐ | ⭐⭐⭐⭐⭐ |
-| Models | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
-| Setup | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ |
+| Speed | ***** | *** | *** | ** |
+| Cost | **** | ** | ** | ***** |
+| Models | *** | ***** | **** | **** |
+| Setup | ***** | ***** | ***** | *** |
 
 **Use Groq when:**
 - Speed is critical

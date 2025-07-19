@@ -26,23 +26,23 @@ async def test_groq_provider():
     # Check if API key is available
     api_key = os.getenv('LLM_GROQ_API_KEY')
     if not api_key:
-        print("❌ LLM_GROQ_API_KEY not found in environment")
+        print("[ERROR] LLM_GROQ_API_KEY not found in environment")
         print("   Please set your Groq API key in .env file")
         return False
     
     try:
         # Initialize provider
-        print("🔧 Initializing Groq provider...")
+        print("[SETUP] Initializing Groq provider...")
         provider = GroqProvider(api_key=api_key)
         
         # Validate configuration
-        print("✅ Validating configuration...")
+        print("[OK] Validating configuration...")
         if not provider.validate_config():
-            print("❌ Configuration validation failed")
+            print("[ERROR] Configuration validation failed")
             return False
         
         # Test available models
-        print("📋 Getting available models...")
+        print("[INFO] Getting available models...")
         models = provider.get_available_models()
         print(f"   Available models: {len(models)}")
         for model in models[:5]:  # Show first 5
@@ -51,7 +51,7 @@ async def test_groq_provider():
             print(f"   ... and {len(models) - 5} more")
         
         # Test cost estimation
-        print("\n💰 Testing cost estimation...")
+        print("\n[COST] Testing cost estimation...")
         test_request = LLMRequest(
             prompt="Hello, how are you?",
             model="llama3-8b-8192",
@@ -63,7 +63,7 @@ async def test_groq_provider():
         print(f"   Estimated cost for test request: ${estimated_cost:.8f}")
         
         # Test actual generation
-        print("\n🚀 Testing text generation...")
+        print("\n[TEST] Testing text generation...")
         print("   Prompt: 'Write a short greeting in one sentence.'")
         
         generation_request = LLMRequest(
@@ -75,7 +75,7 @@ async def test_groq_provider():
         
         response = await provider.generate(generation_request)
         
-        print(f"   ✅ Generation successful!")
+        print(f"   [OK] Generation successful!")
         print(f"   Response: {response.content}")
         print(f"   Provider: {response.provider.value}")
         print(f"   Model: {response.model}")
@@ -87,7 +87,7 @@ async def test_groq_provider():
             print(f"   Metadata: {response.metadata}")
         
         # Test with conversation context
-        print("\n💬 Testing with conversation context...")
+        print("\n[CHAT] Testing with conversation context...")
         context_request = LLMRequest(
             prompt="What's the weather like?",
             model="llama3-8b-8192",
@@ -103,7 +103,7 @@ async def test_groq_provider():
         )
         
         context_response = await provider.generate(context_request)
-        print(f"   ✅ Context generation successful!")
+        print(f"   [OK] Context generation successful!")
         print(f"   Response: {context_response.content}")
         print(f"   Cost: ${context_response.cost:.8f}")
         
@@ -111,7 +111,7 @@ async def test_groq_provider():
         return True
         
     except Exception as e:
-        print(f"❌ Test failed with error: {str(e)}")
+        print(f"[ERROR] Test failed with error: {str(e)}")
         import traceback
         traceback.print_exc()
         return False
@@ -119,7 +119,7 @@ async def test_groq_provider():
 
 async def test_groq_in_llm_service():
     """Test Groq integration within the LLM service"""
-    print("\n🔧 Testing Groq in LLM Service")
+    print("\n[SETUP] Testing Groq in LLM Service")
     print("=" * 50)
     
     try:
@@ -131,10 +131,10 @@ async def test_groq_in_llm_service():
         # Register Groq provider
         api_key = os.getenv('LLM_GROQ_API_KEY')
         if not api_key:
-            print("❌ Cannot test LLM service without API key")
+            print("[ERROR] Cannot test LLM service without API key")
             return False
         
-        print("🔧 Registering Groq provider in LLM service...")
+        print("[SETUP] Registering Groq provider in LLM service...")
         llm_service.register_provider(
             LLMProvider.GROQ,
             api_key=api_key,
@@ -142,7 +142,7 @@ async def test_groq_in_llm_service():
         )
         
         # Test generation
-        print("🚀 Testing generation through LLM service...")
+        print("[TEST] Testing generation through LLM service...")
         response = await llm_service.generate(
             prompt="Say hello in a creative way.",
             provider=LLMProvider.GROQ,
@@ -151,13 +151,13 @@ async def test_groq_in_llm_service():
             max_tokens=30
         )
         
-        print(f"   ✅ Service generation successful!")
+        print(f"   [OK] Service generation successful!")
         print(f"   Response: {response.content}")
         print(f"   Provider: {response.provider.value}")
         print(f"   Cost: ${response.cost:.8f}")
         
         # Test provider comparison
-        print("\n⚖️ Testing provider comparison...")
+        print("\n[COMPARE] Testing provider comparison...")
         available_providers = llm_service.get_available_providers()
         print(f"   Available providers: {[p.value for p in available_providers]}")
         
@@ -168,7 +168,7 @@ async def test_groq_in_llm_service():
                 max_tokens=20
             )
             
-            print(f"   ✅ Comparison successful!")
+            print(f"   [OK] Comparison successful!")
             for provider, result in comparison_results.items():
                 if isinstance(result, Exception):
                     print(f"   {provider.value}: Error - {result}")
@@ -179,7 +179,7 @@ async def test_groq_in_llm_service():
         return True
         
     except Exception as e:
-        print(f"❌ LLM Service test failed: {str(e)}")
+        print(f"[ERROR] LLM Service test failed: {str(e)}")
         import traceback
         traceback.print_exc()
         return False
@@ -197,19 +197,19 @@ async def main():
     service_test = await test_groq_in_llm_service()
     
     print("\n" + "=" * 50)
-    print("📊 Test Results Summary")
+    print("[RESULTS] Test Results Summary")
     print("=" * 50)
-    print(f"Provider Test: {'✅ PASSED' if provider_test else '❌ FAILED'}")
-    print(f"Service Test:  {'✅ PASSED' if service_test else '❌ FAILED'}")
+    print(f"Provider Test: {'[OK] PASSED' if provider_test else '[ERROR] FAILED'}")
+    print(f"Service Test:  {'[OK] PASSED' if service_test else '[ERROR] FAILED'}")
     
     if provider_test and service_test:
         print("\n🎉 All tests passed! Groq integration is working correctly.")
-        print("\n💡 Next steps:")
+        print("\n[TIP] Next steps:")
         print("   1. Set LLM_GROQ_ENABLED=true in your .env file")
         print("   2. Start the backend server")
         print("   3. Test via API endpoints")
     else:
-        print("\n❌ Some tests failed. Please check the errors above.")
+        print("\n[ERROR] Some tests failed. Please check the errors above.")
         sys.exit(1)
 
 
