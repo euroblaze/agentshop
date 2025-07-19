@@ -74,13 +74,15 @@ For its initial release, the shop will be available in a single language: Englis
 The shop will implement a comprehensive Object-Relational Mapping (ORM) layer to facilitate seamless communication between the TypeScript frontend and the Python backend. This ORM layer will be implemented in Python and will serve as the primary interface for all database operations and business logic.
 
 ##### ORM Structure and Components
-The ORM layer will be built using Python's SQLAlchemy framework, providing a robust and scalable foundation for data management. The ORM will consist of several key components:
+The ORM layer will be built using Python's SQLAlchemy framework, providing a robust and scalable foundation for data management. The architecture will emphasize reusable object-oriented classes throughout both backend and frontend systems. The ORM will consist of several key components:
 
 - **Model Definitions**: Python classes that represent database tables including Products, Customers, Orders, Reviews, Inquiries, and Configuration settings
 - **Data Access Layer**: Repository pattern implementation for each model providing CRUD operations, complex queries, and business logic
 - **API Serializers**: JSON serialization and deserialization for communication with the TypeScript frontend
 - **Validation Layer**: Data validation and business rule enforcement before database operations
 - **Migration System**: Database schema versioning and migration management
+- **Service Layer**: Business logic classes that orchestrate operations between multiple models
+- **Factory Classes**: Object creation patterns for complex entity instantiation
 
 ##### Database Connection and Session Management
 The ORM will handle database connections through SQLAlchemy's session management system. Connection pooling will be implemented to ensure optimal performance under concurrent user loads. All database operations will be wrapped in appropriate transaction boundaries to maintain data integrity.
@@ -128,24 +130,223 @@ All API responses will follow a consistent JSON format:
 
 This standardized format ensures predictable communication between the frontend and backend, simplifying error handling and data processing on the TypeScript side.
 
+#### Object-Oriented Architecture Design
+The entire application will be built using reusable object-oriented classes across both the Python backend and TypeScript frontend, promoting code reusability, maintainability, and scalability.
+
+##### Backend Object-Oriented Structure
+The Python backend will implement a layered architecture with the following class hierarchies:
+
+**Domain Models**: Abstract base classes and concrete implementations for all business entities
+- `BaseModel`: Abstract base class with common fields and methods
+- `Product`, `Customer`, `Order`, `Review`: Concrete domain models extending BaseModel
+- `PaymentProcessor`: Abstract class with `StripePayment`, `PayPalPayment` implementations
+
+**Repository Pattern**: Data access abstraction layer
+- `BaseRepository`: Abstract repository with common CRUD operations
+- `ProductRepository`, `CustomerRepository`, `OrderRepository`: Concrete implementations
+- `UnitOfWork`: Transaction management across multiple repositories
+
+**Service Layer**: Business logic orchestration
+- `BaseService`: Abstract service class with common functionality
+- `ProductService`, `CustomerService`, `OrderService`: Business logic implementations
+- `PaymentService`: Payment processing coordination
+- `EmailService`: Email notification management
+
+**API Controllers**: Request/response handling
+- `BaseController`: Abstract controller with common response formatting
+- `ProductController`, `CustomerController`, `OrderController`: Endpoint implementations
+- `AuthController`: Authentication and authorization handling
+
+##### Frontend Object-Oriented Structure
+The TypeScript frontend will implement a modular architecture with reusable class components:
+
+**Models**: Frontend data models mirroring backend entities
+- `BaseModel`: Abstract base class with common properties and methods
+- `Product`, `Customer`, `Order`, `Review`: Frontend model classes with validation
+- `ApiResponse<T>`: Generic response wrapper class
+
+**Services**: API communication and business logic
+- `BaseApiService`: Abstract service with common HTTP methods
+- `ProductService`, `CustomerService`, `OrderService`: API communication classes
+- `AuthService`: Authentication state management
+- `CacheService`: Local data caching and synchronization
+
+**Components**: Reusable UI components
+- `BaseComponent`: Abstract component with common lifecycle methods
+- `ProductCard`, `CustomerForm`, `OrderSummary`: Reusable UI components
+- `Modal`, `Form`, `Table`: Generic UI components
+
+**Managers**: Application state and workflow coordination
+- `StateManager`: Global application state management
+- `RouteManager`: Navigation and routing logic
+- `ValidationManager`: Form validation and error handling
+
+**Utilities**: Helper classes and functions
+- `HttpClient`: HTTP request wrapper with interceptors
+- `Validator`: Data validation utilities
+- `Formatter`: Data formatting and display utilities
+
+##### Design Patterns Implementation
+The architecture will incorporate several design patterns for maximum reusability:
+
+- **Factory Pattern**: For creating complex objects (PaymentProcessorFactory, ComponentFactory)
+- **Observer Pattern**: For state management and event handling
+- **Strategy Pattern**: For payment processing and validation rules
+- **Decorator Pattern**: For API middleware and component enhancement
+- **Singleton Pattern**: For configuration and service management
+- **Template Method Pattern**: For common workflows and processes
+
+##### Code Reusability Principles
+Both backend and frontend will follow these principles:
+- **Inheritance**: Common functionality in base classes
+- **Composition**: Combining simple classes to create complex behavior
+- **Polymorphism**: Interface-based programming for flexibility
+- **Encapsulation**: Private methods and properties for data protection
+- **Abstraction**: Abstract classes and interfaces for common contracts
+
+#### LLM Integration Architecture
+The shop will integrate with multiple Large Language Model (LLM) APIs to enhance various functionalities including product descriptions, customer support, search optimization, and content generation. The integration will support Ollama, OpenAI, Claude, and Perplexity APIs through a unified object-oriented architecture.
+
+##### LLM Service Architecture
+The LLM integration will follow the same object-oriented principles as the rest of the application:
+
+**Backend LLM Classes**:
+- `BaseLLMProvider`: Abstract base class defining common LLM operations
+- `OllamaProvider`: Local Ollama API integration for privacy-focused operations
+- `OpenAIProvider`: OpenAI API integration for advanced language tasks
+- `ClaudeProvider`: Anthropic Claude API integration for reasoning and analysis
+- `PerplexityProvider`: Perplexity API integration for search and research tasks
+- `LLMFactory`: Factory class for creating appropriate LLM provider instances
+- `LLMService`: High-level service orchestrating multiple LLM providers
+- `PromptTemplate`: Template class for structured prompt generation
+- `LLMCache`: Caching layer for LLM responses to optimize performance and costs
+
+**Frontend LLM Classes**:
+- `BaseLLMClient`: Abstract base class for frontend LLM communication
+- `LLMApiClient`: HTTP client for communicating with backend LLM services
+- `ChatInterface`: Interactive chat component for customer support
+- `ContentGenerator`: UI component for AI-assisted content creation
+- `SearchEnhancer`: Component for AI-powered search suggestions
+
+##### LLM Use Cases and Integration Points
+The LLM integration will enhance several areas of the shop:
+
+**Product Management**:
+- AI-generated product descriptions and SEO optimization
+- Automated README file generation for software products
+- Dynamic product categorization and tagging
+- Technical documentation enhancement
+
+**Customer Support**:
+- AI-powered chatbot for instant customer assistance
+- Automated FAQ generation based on product inquiries
+- Intelligent ticket routing and response suggestions
+- Multi-language support for customer communications
+
+**Search and Discovery**:
+- Semantic search capabilities beyond keyword matching
+- AI-powered product recommendations
+- Dynamic search result explanations
+- Query understanding and intent recognition
+
+**Content Creation**:
+- Automated blog post and article generation
+- Marketing copy optimization
+- Email template generation for various scenarios
+- Social media content suggestions
+
+**Analytics and Insights**:
+- Customer sentiment analysis from reviews and inquiries
+- Market trend analysis and reporting
+- Automated business intelligence reports
+- Performance optimization suggestions
+
+##### LLM Provider Configuration
+Each LLM provider will be configurable through the admin interface:
+
+**Ollama Configuration**:
+- Local model selection (llama2, codellama, mistral, etc.)
+- Model parameters (temperature, max_tokens, top_p)
+- Local inference settings and resource allocation
+
+**OpenAI Configuration**:
+- API key and organization settings
+- Model selection (GPT-3.5, GPT-4, GPT-4-turbo, etc.)
+- Usage limits and cost controls
+- Fine-tuning model management
+
+**Claude Configuration**:
+- API key and authentication settings
+- Model selection (Claude-3-haiku, Claude-3-sonnet, Claude-3-opus)
+- Safety and content filtering settings
+- Context window optimization
+
+**Perplexity Configuration**:
+- API credentials and access settings
+- Search model selection
+- Source citation preferences
+- Rate limiting and quota management
+
+##### LLM Response Processing
+All LLM responses will go through a standardized processing pipeline:
+
+**Response Validation**:
+- Content safety and appropriateness checking
+- Format validation and parsing
+- Error handling and fallback mechanisms
+- Response quality scoring
+
+**Response Enhancement**:
+- Fact-checking and verification where applicable
+- Source attribution and citation formatting
+- Content personalization based on user context
+- Multi-language translation support
+
+**Response Caching**:
+- Intelligent caching strategies to reduce API costs
+- Cache invalidation based on content freshness
+- Distributed caching for high-availability setups
+- Cache warming for frequently requested content
+
+##### Security and Privacy Considerations
+The LLM integration will implement robust security measures:
+
+**Data Protection**:
+- Customer data anonymization before LLM processing
+- Secure API key management and rotation
+- Request/response logging with privacy controls
+- Compliance with data protection regulations (GDPR, CCPA)
+
+**Content Safety**:
+- Automated content moderation and filtering
+- Inappropriate content detection and blocking
+- Bias detection and mitigation strategies
+- Human review workflows for sensitive content
+
+**API Security**:
+- Rate limiting and quota management
+- Request authentication and authorization
+- API key encryption and secure storage
+- Network security and encrypted communications
+
 # Programming Tasks
 
-## 1. ORM Layer Implementation
+## 1. Backend Object-Oriented Architecture Implementation
 - Set up SQLAlchemy ORM with SQLite database connection
-- Create base model class with common fields (id, created_at, updated_at)
-- Implement Product model with all required fields and relationships
-- Create Customer model with authentication and profile fields
-- Build Order model with payment and fulfillment tracking
-- Implement Review model for thumbs-up functionality
-- Create Inquiry model for customer questions
-- Build AdminUser model for backend access
-- Implement ConfigSetting model for dynamic configuration
-- Create SupportRequest model for customer service
+- Create abstract BaseModel class with common fields and methods (id, created_at, updated_at)
+- Implement concrete domain models: Product, Customer, Order, Review, Inquiry, AdminUser, ConfigSetting, SupportRequest
+- Create abstract BaseRepository class with common CRUD operations
+- Implement concrete repository classes: ProductRepository, CustomerRepository, OrderRepository, etc.
+- Build UnitOfWork class for transaction management across repositories
+- Create abstract BaseService class with common functionality
+- Implement concrete service classes: ProductService, CustomerService, OrderService, PaymentService, EmailService
+- Build abstract BaseController class with common response formatting
+- Implement concrete controller classes: ProductController, CustomerController, OrderController, AuthController
+- Create abstract PaymentProcessor class with Stripe and PayPal implementations
 - Set up database migration system using Alembic
 - Implement connection pooling and session management
-- Create repository pattern classes for each model
-- Build data validation layer with business rules
-- Implement JSON serializers for API communication
+- Build factory classes for complex object creation
+- Implement JSON serializers for API communication using inheritance
 
 ## 2. API Endpoint Development
 - Create Flask/FastAPI application structure
@@ -186,13 +387,22 @@ This standardized format ensures predictable communication between the frontend 
 - Create support_requests table (id, customer_id, order_id, type, message, status, created_at)
 - Create config_settings table (id, key, value, description, updated_at)
 
-## 5. Frontend Development
-- Create homepage with promotional product blocks
-- Implement header with navigation menu and search field
-- Create footer with links to static pages
-- Design product listing page with search results
-- Build individual product pages with rich content display
-- Implement customer greeting functionality using session data
+## 5. Frontend Object-Oriented Development
+- Create abstract BaseModel class for frontend data models
+- Implement concrete model classes: Product, Customer, Order, Review with validation
+- Build abstract BaseApiService class with common HTTP methods
+- Implement concrete service classes: ProductService, CustomerService, OrderService, AuthService
+- Create abstract BaseComponent class with common lifecycle methods
+- Implement reusable UI component classes: ProductCard, CustomerForm, OrderSummary, Modal, Form, Table
+- Build StateManager class for global application state management
+- Implement RouteManager class for navigation and routing logic
+- Create ValidationManager class for form validation and error handling
+- Build HttpClient class with interceptors for API communication
+- Implement Validator utility class for data validation
+- Create Formatter utility class for data formatting and display
+- Build ComponentFactory class for dynamic component creation
+- Implement homepage with promotional product blocks using component classes
+- Create header and footer components with navigation functionality
 
 ## 6. Product Management System
 - Create product HTML pages with SEO-optimized tags
