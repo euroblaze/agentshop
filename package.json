@@ -30,7 +30,7 @@
     "ollama",
     "perplexity"
   ],
-  "author": "Agent Shop Team",
+  "author": "Vibe coding by Ashant Chalasani",
   "license": "MIT",
   "devDependencies": {
     "concurrently": "^8.2.2"

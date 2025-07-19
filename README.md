@@ -227,6 +227,17 @@ npm run format            # Format all code
 6. **Conversation Persistence** - Chat history stored in database
 7. **Performance Optimized** - Caching and rate limiting built-in
 
+## Documentation
+
+### Developer Documentation
+- [**Project Structure**](docs/dev/PROJECT_STRUCTURE.md) - Complete project structure and component overview
+- [**Technical Specification**](docs/dev/spec.md) - Detailed technical specifications and requirements
+- [**Groq Integration Guide**](docs/dev/GROQ_INTEGRATION.md) - Comprehensive guide for Groq LLM integration
+
+### Additional Resources
+- [**Automation System**](automations/README.md) - Web crawling, scheduling, and data processing
+- [**CLI Tools**](cli/README.md) - Command-line interfaces for Python and TypeScript
+
 ## Contributing
 
 1. Fork the repository
