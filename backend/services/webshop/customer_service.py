@@ -69,7 +69,24 @@ class CustomerService(BaseService[Customer]):
     def _after_create(self, customer: Customer, entity_data: Dict[str, Any]):
         """Send welcome email and verification after customer creation"""
         try:
-            # TODO: Send welcome email with verification link
+            # Send welcome email with verification link
+            try:
+                from ..email_service import email_service
+                
+                customer_data = {
+                    'first_name': customer.first_name,
+                    'email': customer.email
+                }
+                
+                email_sent = email_service.send_registration_welcome(customer_data)
+                
+                if email_sent:
+                    logger.info(f"Welcome email sent to: {customer.email}")
+                else:
+                    logger.warning(f"Failed to send welcome email to: {customer.email}")
+                    
+            except Exception as e:
+                logger.error(f"Error sending welcome email: {e}")
             logger.info(f"Customer registered: {customer.email}")
         except Exception as e:
             logger.error(f"Error sending welcome email: {e}")

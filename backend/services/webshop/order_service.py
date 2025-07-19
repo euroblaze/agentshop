@@ -81,8 +81,35 @@ class OrderService(BaseService[Order]):
     def _after_create(self, order: Order, entity_data: Dict[str, Any]):
         """Send order confirmation after creation"""
         try:
-            # TODO: Send order confirmation email
-            logger.info(f"Order created: {order.order_number}")
+            from ..email_service import email_service
+            
+            # Prepare order data for email
+            order_data = {
+                'customer_name': f"{order.billing_first_name} {order.billing_last_name}",
+                'customer_email': order.billing_email,
+                'order_number': order.order_number,
+                'order_date': order.created_at.strftime('%Y-%m-%d') if order.created_at else '',
+                'total_amount': f"{order.total_amount:.2f}",
+                'items': []
+            }
+            
+            # Add order items if available
+            if hasattr(order, 'items') and order.items:
+                for item in order.items:
+                    order_data['items'].append({
+                        'name': item.name,
+                        'price': f"{item.price:.2f}",
+                        'quantity': item.quantity
+                    })
+            
+            # Send confirmation email
+            email_sent = email_service.send_order_confirmation(order_data)
+            
+            if email_sent:
+                logger.info(f"Order confirmation sent for: {order.order_number}")
+            else:
+                logger.warning(f"Failed to send confirmation email for: {order.order_number}")
+                
         except Exception as e:
             logger.error(f"Error sending order confirmation: {e}")
     
@@ -345,8 +372,30 @@ class OrderService(BaseService[Order]):
         """Calculate order totals"""
         order._calculate_totals()
         
-        # Apply tax calculation if needed
-        # TODO: Implement tax calculation based on location
+        # Apply tax calculation based on billing address
+        if order.subtotal and order.subtotal > 0:
+            try:
+                from ..payment_service import payment_service
+                
+                billing_address = {
+                    'street': order.billing_street,
+                    'city': order.billing_city,
+                    'state': order.billing_state,
+                    'postal_code': order.billing_postal_code,
+                    'country': order.billing_country
+                }
+                
+                tax_amount = payment_service.calculate_tax(order.subtotal, billing_address)
+                order.tax_amount = float(tax_amount)
+                order.total_amount = order.subtotal + order.tax_amount
+                
+                logger.info(f"Tax calculated for order {order.order_number}: ${tax_amount:.2f}")
+                
+            except Exception as e:
+                logger.error(f"Tax calculation failed: {e}")
+                # Fallback to no tax
+                order.tax_amount = 0.0
+                order.total_amount = order.subtotal
     
     def _can_transition_to_status(self, current_status: str, new_status: str) -> bool:
         """Check if status transition is allowed"""
@@ -376,16 +425,35 @@ class OrderService(BaseService[Order]):
     def _process_stripe_payment(self, payment: Payment, payment_details: Dict[str, Any]) -> bool:
         """Process Stripe payment"""
         try:
-            # TODO: Implement actual Stripe payment processing
-            # This is a placeholder implementation
+            from ..payment_service import payment_service
+            from decimal import Decimal
             
-            # Simulate payment processing
-            transaction_id = f"stripe_{payment.id}_{datetime.now().strftime('%Y%m%d%H%M%S')}"
-            
-            # Mark payment as successful
-            self.payment_service.mark_payment_successful(
-                payment.id, transaction_id
+            # Process payment with Stripe
+            result = payment_service.process_payment(
+                provider_name='stripe',
+                amount=Decimal(str(payment.amount)),
+                payment_method=payment_details,
+                metadata={
+                    'order_id': str(payment.order_id),
+                    'payment_id': str(payment.id),
+                    'description': f"Order #{payment.order.order_number}" if payment.order else "AgentShop Purchase"
+                }
             )
+            
+            if result.success:
+                # Mark payment as successful
+                self.payment_service.mark_payment_successful(
+                    payment.id, result.transaction_id
+                )
+                logger.info(f"Stripe payment successful: {result.transaction_id}")
+                return True
+            else:
+                # Mark payment as failed
+                self.payment_service.mark_payment_failed(
+                    payment.id, result.error_message
+                )
+                logger.error(f"Stripe payment failed: {result.error_message}")
+                return False
             
             return True
             
@@ -399,16 +467,45 @@ class OrderService(BaseService[Order]):
     def _process_paypal_payment(self, payment: Payment, payment_details: Dict[str, Any]) -> bool:
         """Process PayPal payment"""
         try:
-            # TODO: Implement actual PayPal payment processing
-            # This is a placeholder implementation
+            from ..payment_service import payment_service
+            from decimal import Decimal
             
-            # Simulate payment processing
-            transaction_id = f"paypal_{payment.id}_{datetime.now().strftime('%Y%m%d%H%M%S')}"
-            
-            # Mark payment as successful
-            self.payment_service.mark_payment_successful(
-                payment.id, transaction_id
+            # Process payment with PayPal
+            result = payment_service.process_payment(
+                provider_name='paypal',
+                amount=Decimal(str(payment.amount)),
+                payment_method=payment_details,
+                metadata={
+                    'order_id': str(payment.order_id),
+                    'payment_id': str(payment.id),
+                    'description': f"Order #{payment.order.order_number}" if payment.order else "AgentShop Purchase"
+                }
             )
+            
+            if result.success:
+                # Mark payment as successful (or pending for approval)
+                if 'approval_url' in result.raw_response:
+                    # PayPal requires user approval, mark as pending
+                    self.payment_service.update_payment_status(
+                        payment.id, PaymentStatus.PENDING, result.transaction_id
+                    )
+                    logger.info(f"PayPal payment pending approval: {result.transaction_id}")
+                    # Store approval URL for frontend
+                    payment.notes = result.raw_response.get('approval_url', '')
+                else:
+                    # Payment completed
+                    self.payment_service.mark_payment_successful(
+                        payment.id, result.transaction_id
+                    )
+                    logger.info(f"PayPal payment successful: {result.transaction_id}")
+                return True
+            else:
+                # Mark payment as failed
+                self.payment_service.mark_payment_failed(
+                    payment.id, result.error_message
+                )
+                logger.error(f"PayPal payment failed: {result.error_message}")
+                return False
             
             return True
             
@@ -547,8 +644,25 @@ class InstallationRequestService(BaseService[InstallationRequest]):
     def _after_create(self, request: InstallationRequest, entity_data: Dict[str, Any]):
         """Send notification after installation request creation"""
         try:
-            # TODO: Send installation request email to admin
-            logger.info(f"Installation request created: {request.id}")
+            from ..email_service import email_service
+            
+            # Prepare request data for email
+            request_data = {
+                'order_number': request.order.order_number if request.order else 'N/A',
+                'customer_name': f"{request.order.billing_first_name} {request.order.billing_last_name}" if request.order else 'Unknown',
+                'product_name': request.odoo_version,  # Using odoo_version as product identifier
+                'request_date': request.created_at.strftime('%Y-%m-%d') if request.created_at else datetime.now().strftime('%Y-%m-%d'),
+                'notes': request.notes or 'No additional notes provided'
+            }
+            
+            # Send notification email to admin
+            email_sent = email_service.send_installation_request_notification(request_data)
+            
+            if email_sent:
+                logger.info(f"Installation request notification sent: {request.id}")
+            else:
+                logger.warning(f"Failed to send installation request notification: {request.id}")
+                
         except Exception as e:
             logger.error(f"Error sending installation request notification: {e}")
     
@@ -583,7 +697,30 @@ class InstallationRequestService(BaseService[InstallationRequest]):
                 request_id, 'quoted', quote_amount
             )
             if success:
-                # TODO: Send quote email
+                # Send quote email to customer
+                from ..email_service import email_service
+                
+                # Get the installation request details
+                request = self.repository.get_by_id(request_id)
+                if request and request.order:
+                    quote_data = {
+                        'customer_name': f"{request.order.billing_first_name} {request.order.billing_last_name}",
+                        'customer_email': request.order.billing_email,
+                        'order_number': request.order.order_number,
+                        'product_name': request.odoo_version,
+                        'quote_amount': f"{quote_amount:.2f}",
+                        'estimated_hours': estimated_hours or 'TBD'
+                    }
+                    
+                    email_sent = email_service.send_installation_quote(quote_data)
+                    
+                    if email_sent:
+                        logger.info(f"Quote email sent for installation request: {request_id}")
+                    else:
+                        logger.warning(f"Failed to send quote email for request: {request_id}")
+                else:
+                    logger.error(f"Could not find request or order for quote email: {request_id}")
+                
                 logger.info(f"Quote sent for installation request: {request_id}")
             return success
         except Exception as e:
