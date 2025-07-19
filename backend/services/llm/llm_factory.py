@@ -4,6 +4,7 @@ from .ollama_provider import OllamaProvider
 from .openai_provider import OpenAIProvider
 from .claude_provider import ClaudeProvider
 from .perplexity_provider import PerplexityProvider
+from .groq_provider import GroqProvider
 
 
 class LLMFactory:
@@ -36,6 +37,11 @@ class LLMFactory:
             if not api_key:
                 raise ValueError("API key is required for Perplexity provider")
             return PerplexityProvider(api_key=api_key, config=config)
+        
+        elif provider_type == LLMProvider.GROQ:
+            if not api_key:
+                raise ValueError("API key is required for Groq provider")
+            return GroqProvider(api_key=api_key, config=config)
         
         else:
             raise ValueError(f"Unsupported provider type: {provider_type}")

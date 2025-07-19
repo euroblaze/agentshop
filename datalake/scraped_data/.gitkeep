@@ -1,0 +1,6 @@
+# This directory contains data scraped from external sources
+# Subdirectories:
+# - products/: Competitor product information
+# - reviews/: Customer reviews and feedback  
+# - market_research/: Industry and market data
+# - content/: Blog posts, articles, documentation

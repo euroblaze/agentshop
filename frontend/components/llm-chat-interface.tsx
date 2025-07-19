@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { LLMApiClient, LLMRequest, LLMResponse } from '../services/llm-api-client';
+import { LLMApiClient, ChatMessage, ChatResponse, Conversation } from '../services/llm-api-client';
 
 interface Message {
   id: string;
@@ -10,10 +10,13 @@ interface Message {
   model?: string;
   cost?: number;
   tokens?: number;
+  request_id?: number;
 }
 
 interface ChatInterfaceProps {
   apiClient: LLMApiClient;
+  sessionId: string;
+  userId?: number;
   defaultProvider?: string;
   defaultModel?: string;
   onCostUpdate?: (totalCost: number) => void;
@@ -22,6 +25,8 @@ interface ChatInterfaceProps {
 
 export const ChatInterface: React.FC<ChatInterfaceProps> = ({
   apiClient,
+  sessionId,
+  userId,
   defaultProvider = 'openai',
   defaultModel,
   onCostUpdate,
@@ -41,6 +46,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
 
   useEffect(() => {
     loadProviders();
+    loadChatHistory();
   }, []);
 
   useEffect(() => {
@@ -85,11 +91,30 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const generateConversationHistory = () => {
-    return messages.map(msg => ({
-      role: msg.sender === 'user' ? 'user' : 'assistant',
-      content: msg.content
-    }));
+  const loadChatHistory = async () => {
+    try {
+      const history = await apiClient.getChatHistory(sessionId);
+      if (history.messages && history.messages.length > 0) {
+        const loadedMessages: Message[] = history.messages.map((msg, index) => ({
+          id: `${index}-${msg.role}`,
+          content: msg.content,
+          sender: msg.role as 'user' | 'assistant',
+          timestamp: msg.timestamp ? new Date(msg.timestamp) : new Date(),
+          provider: msg.provider,
+          model: msg.model,
+          cost: msg.cost,
+          tokens: msg.tokens_used,
+          request_id: msg.request_id
+        }));
+        setMessages(loadedMessages);
+        
+        // Calculate total cost from loaded messages
+        const totalCostFromHistory = loadedMessages.reduce((sum, msg) => sum + (msg.cost || 0), 0);
+        setTotalCost(totalCostFromHistory);
+      }
+    } catch (error) {
+      console.error('Failed to load chat history:', error);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -105,36 +130,37 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
     };
 
     setMessages(prev => [...prev, userMessage]);
+    const messageText = inputValue;
     setInputValue('');
     setIsLoading(true);
 
     try {
-      const context: Record<string, any> = {
-        conversation_history: generateConversationHistory()
-      };
-
+      const context: Record<string, any> = {};
       if (systemPrompt) {
         context.system_prompt = systemPrompt;
       }
 
-      const request: LLMRequest = {
-        prompt: inputValue,
-        provider: currentProvider,
-        model: currentModel,
-        context
-      };
-
-      const response: LLMResponse = await apiClient.generate(request);
+      const response: ChatResponse = await apiClient.sendChatMessage(
+        messageText,
+        sessionId,
+        {
+          provider: currentProvider,
+          model: currentModel,
+          user_id: userId,
+          context
+        }
+      );
 
       const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
+        id: response.assistant_message_id.toString(),
         content: response.content,
         sender: 'assistant',
         timestamp: new Date(),
         provider: response.provider,
         model: response.model,
         cost: response.cost,
-        tokens: response.tokens_used
+        tokens: response.tokens_used,
+        request_id: response.request_id
       };
 
       setMessages(prev => [...prev, assistantMessage]);
@@ -163,6 +189,8 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
   const clearChat = () => {
     setMessages([]);
     setTotalCost(0);
+    // Note: This only clears the UI. The backend conversation history remains intact.
+    // To actually clear the conversation, you would need to implement a backend endpoint.
   };
 
   return (

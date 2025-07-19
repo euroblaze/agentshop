@@ -9,6 +9,7 @@ class LLMProvider(Enum):
     OPENAI = "openai"
     CLAUDE = "claude"
     PERPLEXITY = "perplexity"
+    GROQ = "groq"
 
 
 @dataclass

@@ -2,6 +2,8 @@ export interface LLMRequest {
   prompt: string;
   provider?: string;
   model?: string;
+  user_id?: number;
+  session_id?: string;
   temperature?: number;
   max_tokens?: number;
   top_p?: number;
@@ -10,13 +12,48 @@ export interface LLMRequest {
 }
 
 export interface LLMResponse {
+  success: boolean;
+  request_id: number;
+  response_id: number;
   content: string;
   provider: string;
   model: string;
   tokens_used: number;
   cost: number;
   cached: boolean;
+  processing_time_ms: number;
   metadata?: Record<string, any>;
+}
+
+export interface ChatMessage {
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+  timestamp?: string;
+  request_id?: number;
+  tokens_used?: number;
+  cost?: number;
+  provider?: string;
+  model?: string;
+}
+
+export interface Conversation {
+  id: number;
+  session_id: string;
+  user_id?: number;
+  title?: string;
+  message_count: number;
+  total_cost: number;
+  last_activity: string;
+  is_active: boolean;
+  default_provider?: string;
+  default_model?: string;
+}
+
+export interface ChatResponse extends LLMResponse {
+  conversation_id: number;
+  user_message_id: number;
+  assistant_message_id: number;
+  message_count: number;
 }
 
 export interface ApiResponse<T> {
@@ -51,24 +88,75 @@ export class LLMApiClient {
     return response.data;
   }
 
+  async sendChatMessage(
+    message: string,
+    sessionId: string,
+    options?: Partial<LLMRequest>
+  ): Promise<ChatResponse> {
+    const request = {
+      message,
+      session_id: sessionId,
+      ...options
+    };
+
+    const response = await this.makeRequest<ChatResponse>('/chat/message', {
+      method: 'POST',
+      body: JSON.stringify(request)
+    });
+    return response.data;
+  }
+
+  async getChatHistory(sessionId: string, limit?: number): Promise<{
+    conversation: Conversation | null;
+    messages: ChatMessage[];
+  }> {
+    const params = new URLSearchParams();
+    if (limit) params.append('limit', limit.toString());
+    
+    const response = await this.makeRequest<{
+      conversation: Conversation | null;
+      messages: ChatMessage[];
+    }>(`/chat/history/${sessionId}?${params}`);
+    return response.data;
+  }
+
+  async getUserConversations(userId: number, activeOnly: boolean = true): Promise<Conversation[]> {
+    const params = new URLSearchParams();
+    params.append('active_only', activeOnly.toString());
+    
+    const response = await this.makeRequest<Conversation[]>(
+      `/chat/conversations/user/${userId}?${params}`
+    );
+    return response.data;
+  }
+
   async compareProviders(
     prompt: string,
     providers: string[],
     options?: Partial<LLMRequest>
-  ): Promise<Record<string, LLMResponse | { error: string }>> {
+  ): Promise<{
+    session_id: string;
+    results: Record<string, { success: boolean; content?: string; error?: string; cost?: number }>;
+    total_cost: number;
+    providers_count: number;
+    successful_count: number;
+  }> {
     const request = {
       prompt,
       providers,
       ...options
     };
 
-    const response = await this.makeRequest<Record<string, LLMResponse | { error: string }>>(
-      '/generate/compare',
-      {
-        method: 'POST',
-        body: JSON.stringify(request)
-      }
-    );
+    const response = await this.makeRequest<{
+      session_id: string;
+      results: Record<string, any>;
+      total_cost: number;
+      providers_count: number;
+      successful_count: number;
+    }>('/chat/compare', {
+      method: 'POST',
+      body: JSON.stringify(request)
+    });
     return response.data;
   }
 
@@ -87,7 +175,7 @@ export class LLMApiClient {
       estimated_cost: number;
       provider: string;
       model?: string;
-    }>('/cost/estimate', {
+    }>('/analytics/cost/estimate', {
       method: 'POST',
       body: JSON.stringify(request)
     });
@@ -95,7 +183,26 @@ export class LLMApiClient {
   }
 
   async healthCheck(): Promise<Record<string, boolean>> {
-    const response = await this.makeRequest<Record<string, boolean>>('/health');
+    const response = await this.makeRequest<Record<string, boolean>>('/analytics/health');
+    return response.data;
+  }
+
+  async getUsageStatistics(
+    periodType: 'hour' | 'day' | 'month' = 'day',
+    days: number = 7,
+    provider?: string
+  ): Promise<any[]> {
+    const params = new URLSearchParams();
+    params.append('period_type', periodType);
+    params.append('days', days.toString());
+    if (provider) params.append('provider', provider);
+
+    const response = await this.makeRequest<any[]>(`/analytics/usage?${params}`);
+    return response.data;
+  }
+
+  async getProviderStatus(): Promise<any[]> {
+    const response = await this.makeRequest<any[]>('/analytics/providers/status');
     return response.data;
   }
 

@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from typing import Dict, Any
 import asyncio
-from ..services.llm import LLMService, LLMProvider
+from ..services.llm_orm_service import llm_orm_service
 from ..middleware.rate_limiter import llm_rate_limit
 from ..middleware.error_handler import ErrorHandler
 
@@ -9,15 +9,11 @@ from ..middleware.error_handler import ErrorHandler
 llm_bp = Blueprint('llm', __name__, url_prefix='/api/llm')
 
 
-# Global LLM service instance
-llm_service = LLMService()
-
-
 @llm_bp.route('/providers', methods=['GET'])
 def get_providers():
     """Get list of available LLM providers"""
     try:
-        providers = llm_service.get_available_providers()
+        providers = llm_orm_service.llm_service.get_available_providers()
         return jsonify({
             "success": True,
             "data": [provider.value for provider in providers],
@@ -35,8 +31,9 @@ def get_providers():
 def get_models(provider_name: str):
     """Get available models for a specific provider"""
     try:
+        from ..services.llm import LLMProvider
         provider = LLMProvider(provider_name.lower())
-        models = llm_service.get_available_models(provider)
+        models = llm_orm_service.llm_service.get_available_models(provider)
         
         return jsonify({
             "success": True,
@@ -60,7 +57,7 @@ def get_models(provider_name: str):
 @llm_bp.route('/generate', methods=['POST'])
 @llm_rate_limit(requests_per_minute=10)
 def generate():
-    """Generate text using an LLM provider"""
+    """Generate text using an LLM provider via ORM"""
     try:
         data = request.get_json()
         
@@ -74,6 +71,8 @@ def generate():
         prompt = data['prompt']
         provider_name = data.get('provider')
         model = data.get('model')
+        user_id = data.get('user_id')
+        session_id = data.get('session_id')
         
         # Optional parameters
         kwargs = {
@@ -81,42 +80,32 @@ def generate():
             'max_tokens': data.get('max_tokens', 1000),
             'top_p': data.get('top_p', 1.0),
             'stream': data.get('stream', False),
-            'context': data.get('context')
+            'context': data.get('context'),
+            'ip_address': request.remote_addr,
+            'user_agent': request.headers.get('User-Agent')
         }
-        
-        provider = None
-        if provider_name:
-            try:
-                provider = LLMProvider(provider_name.lower())
-            except ValueError:
-                return jsonify({
-                    "success": False,
-                    "data": None,
-                    "message": f"Unknown provider: {provider_name}"
-                }), 400
         
         # Run async function in event loop
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         
         try:
-            response = loop.run_until_complete(
-                llm_service.generate(prompt, provider, model, **kwargs)
+            result = loop.run_until_complete(
+                llm_orm_service.generate_text(
+                    prompt=prompt,
+                    provider=provider_name,
+                    model=model,
+                    user_id=user_id,
+                    session_id=session_id,
+                    **kwargs
+                )
             )
         finally:
             loop.close()
         
         return jsonify({
             "success": True,
-            "data": {
-                "content": response.content,
-                "provider": response.provider.value,
-                "model": response.model,
-                "tokens_used": response.tokens_used,
-                "cost": response.cost,
-                "cached": response.cached,
-                "metadata": response.metadata
-            },
+            "data": result,
             "message": "Text generated successfully"
         })
         

@@ -1,0 +1,6 @@
+# Cleaned and processed datasets
+# Subdirectories:
+# - reports/: Generated reports and analysis
+# - exports/: Data exports for external use
+# - ml_datasets/: Machine learning training data
+# - aggregations/: Statistical summaries

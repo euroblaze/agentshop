@@ -1,0 +1,5 @@
+# Database backups and snapshots
+# Subdirectories:
+# - daily/: Automated daily backups
+# - weekly/: Weekly backup archives  
+# - manual/: Manual backup files

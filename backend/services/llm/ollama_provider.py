@@ -1,6 +1,6 @@
 import aiohttp
 import json
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 from .base_llm_provider import BaseLLMProvider, LLMProvider, LLMRequest, LLMResponse
 
 

@@ -1,0 +1,45 @@
+{
+  "name": "@agentshop/cli",
+  "version": "1.0.0",
+  "description": "AgentShop CLI - TypeScript management interface",
+  "main": "agentshop-cli.ts",
+  "bin": {
+    "agentshop": "./agentshop-cli.ts"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "ts-node agentshop-cli.ts",
+    "dev": "ts-node --watch agentshop-cli.ts",
+    "lint": "eslint . --ext .ts",
+    "format": "prettier --write \"**/*.ts\""
+  },
+  "keywords": [
+    "agentshop",
+    "cli",
+    "llm",
+    "ai",
+    "management"
+  ],
+  "author": "AgentShop Team",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^11.1.0",
+    "axios": "^1.6.0",
+    "chalk": "^4.1.2",
+    "ora": "^5.4.1",
+    "inquirer": "^8.2.6"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.0",
+    "@types/inquirer": "^9.0.3",
+    "typescript": "^5.2.2",
+    "ts-node": "^10.9.1",
+    "eslint": "^8.52.0",
+    "@typescript-eslint/eslint-plugin": "^6.9.0",
+    "@typescript-eslint/parser": "^6.9.0",
+    "prettier": "^3.0.3"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
