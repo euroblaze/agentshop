@@ -4,15 +4,15 @@ AgentShop is an online marketplace for AI agent software with integrated LLM cap
 
 ## Features
 
-✅ **Multi-LLM Integration** - Unified interface for Ollama, OpenAI, Claude, Perplexity, and Groq  
-✅ **ORM-Based Architecture** - All LLM calls channeled through backend ORM layer  
-✅ **Request Tracking** - Complete logging and tracking of all LLM requests/responses  
-✅ **Cost Management** - Real-time cost tracking and usage limits  
-✅ **Conversation Management** - Persistent chat conversations with history  
-✅ **Provider Comparison** - Side-by-side comparison of LLM providers  
-✅ **Rate Limiting** - Built-in rate limiting and quota management  
-✅ **Caching** - Intelligent response caching for cost optimization  
-✅ **Analytics** - Usage statistics and provider health monitoring  
+ **Multi-LLM Integration** - Unified interface for Ollama, OpenAI, Claude, Perplexity, and Groq  
+ **ORM-Based Architecture** - All LLM calls channeled through backend ORM layer  
+ **Request Tracking** - Complete logging and tracking of all LLM requests/responses  
+ **Cost Management** - Real-time cost tracking and usage limits  
+ **Conversation Management** - Persistent chat conversations with history  
+ **Provider Comparison** - Side-by-side comparison of LLM providers  
+ **Rate Limiting** - Built-in rate limiting and quota management  
+ **Caching** - Intelligent response caching for cost optimization  
+ **Analytics** - Usage statistics and provider health monitoring  
 
 ## Architecture
 
