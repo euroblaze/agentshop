@@ -151,7 +151,7 @@ Some agents offer trial periods:
 
 1. **Add to Cart** - Click "Add to Cart" or "Buy Now"
 2. **Review Order** - Verify agent details and price
-3. **Choose Payment** - Credit card, PayPal, or crypto
+3. **Choose Payment** - Credit card, PayPal, or bank transfer
 4. **Complete Purchase** - Confirm and pay
 5. **Instant Access** - Download immediately after payment
 
@@ -167,10 +167,10 @@ Some agents offer trial periods:
 - Buyer protection included
 - No need to share card details
 
-**Cryptocurrency**
-- Bitcoin, Ethereum
-- Instant confirmation
-- Enhanced privacy
+**Bank Transfer**
+- Direct bank transfer
+- Secure processing
+- Available worldwide
 
 ### Download & Installation
 

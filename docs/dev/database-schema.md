@@ -484,7 +484,7 @@ class Order(BaseModel):
     shipping_country = Column(String(100), nullable=True)
     
     # Payment information
-    payment_method = Column(String(50), nullable=True)     # credit_card, paypal, crypto, etc.
+    payment_method = Column(String(50), nullable=True)     # credit_card, paypal, bank_transfer
     payment_processor = Column(String(50), nullable=True)  # stripe, paypal, etc.
     payment_transaction_id = Column(String(255), nullable=True)
     

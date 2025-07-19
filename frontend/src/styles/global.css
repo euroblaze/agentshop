@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+@import './tokens.css';
+@import './themes.css';
+@import './responsive.css';
+
 :root {
   /* Color Palette */
   --color-primary: #3b82f6;

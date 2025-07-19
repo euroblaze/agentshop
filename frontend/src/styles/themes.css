@@ -1,0 +1,248 @@
+/* Theme System - Shop, Admin, and Customer Area Theming */
+
+/* Base Theme (Shop) */
+.theme-shop {
+  --theme-primary: var(--shop-primary);
+  --theme-secondary: var(--shop-secondary);
+  --theme-accent: var(--shop-accent);
+  --theme-bg: var(--shop-bg);
+  --theme-surface: var(--shop-surface);
+  --theme-text: var(--color-text-primary);
+  --theme-text-secondary: var(--color-text-secondary);
+  --theme-border: var(--color-border);
+}
+
+/* Admin Theme */
+.theme-admin {
+  --theme-primary: var(--admin-primary);
+  --theme-secondary: var(--admin-secondary);
+  --theme-success: var(--admin-success);
+  --theme-warning: var(--admin-warning);
+  --theme-danger: var(--admin-danger);
+  --theme-bg: var(--admin-bg);
+  --theme-surface: var(--admin-surface);
+  --theme-sidebar: var(--admin-sidebar);
+  --theme-header: var(--admin-header);
+  --theme-text: var(--color-text-primary);
+  --theme-text-secondary: var(--color-text-secondary);
+  --theme-border: var(--color-border);
+}
+
+/* Customer Theme */
+.theme-customer {
+  --theme-primary: var(--customer-primary);
+  --theme-secondary: var(--customer-secondary);
+  --theme-accent: var(--customer-accent);
+  --theme-bg: var(--customer-bg);
+  --theme-surface: var(--customer-surface);
+  --theme-text: var(--color-text-primary);
+  --theme-text-secondary: var(--color-text-secondary);
+  --theme-border: var(--color-border);
+}
+
+/* Customer Tier Themes */
+.theme-customer.tier-bronze {
+  --theme-accent: var(--tier-bronze);
+  --tier-badge-bg: var(--tier-bronze);
+  --tier-badge-text: #ffffff;
+}
+
+.theme-customer.tier-silver {
+  --theme-accent: var(--tier-silver);
+  --tier-badge-bg: var(--tier-silver);
+  --tier-badge-text: #000000;
+}
+
+.theme-customer.tier-gold {
+  --theme-accent: var(--tier-gold);
+  --tier-badge-bg: var(--tier-gold);
+  --tier-badge-text: #000000;
+}
+
+.theme-customer.tier-platinum {
+  --theme-accent: var(--tier-platinum);
+  --tier-badge-bg: var(--tier-platinum);
+  --tier-badge-text: #000000;
+}
+
+/* Component Theme Adaptations */
+.theme-shop .btn-primary {
+  @apply bg-emerald-600 border-emerald-600 hover:bg-emerald-700 focus:ring-emerald-500;
+}
+
+.theme-admin .btn-primary {
+  @apply bg-blue-800 border-blue-800 hover:bg-blue-900 focus:ring-blue-600;
+}
+
+.theme-customer .btn-primary {
+  @apply bg-violet-600 border-violet-600 hover:bg-violet-700 focus:ring-violet-500;
+}
+
+/* Admin Specific Styles */
+.theme-admin {
+  --admin-sidebar-bg: var(--admin-sidebar);
+  --admin-sidebar-text: #e2e8f0;
+  --admin-sidebar-active: var(--admin-primary);
+  --admin-header-bg: var(--admin-header);
+  --admin-header-text: #f8fafc;
+}
+
+.theme-admin .admin-sidebar {
+  background-color: var(--admin-sidebar-bg);
+  color: var(--admin-sidebar-text);
+}
+
+.theme-admin .admin-sidebar-item:hover {
+  background-color: rgba(59, 130, 246, 0.1);
+}
+
+.theme-admin .admin-sidebar-item.active {
+  background-color: var(--admin-sidebar-active);
+  color: white;
+}
+
+.theme-admin .admin-header {
+  background-color: var(--admin-header-bg);
+  color: var(--admin-header-text);
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* Shop Specific Styles */
+.theme-shop .product-card {
+  @apply bg-white border-gray-200 hover:shadow-lg hover:border-emerald-200;
+  transition: all var(--transition-normal);
+}
+
+.theme-shop .product-card:hover .product-image {
+  @apply scale-105;
+}
+
+.theme-shop .price-tag {
+  @apply text-emerald-600 font-semibold;
+}
+
+.theme-shop .cart-badge {
+  @apply bg-red-500 text-white;
+}
+
+/* Customer Specific Styles */
+.theme-customer .account-nav {
+  @apply border-violet-200;
+}
+
+.theme-customer .account-nav-item.active {
+  @apply bg-violet-50 text-violet-700 border-r-2 border-violet-500;
+}
+
+.theme-customer .order-status {
+  @apply px-2 py-1 rounded-full text-xs font-medium;
+}
+
+.theme-customer .order-status.pending {
+  @apply bg-yellow-100 text-yellow-800;
+}
+
+.theme-customer .order-status.processing {
+  @apply bg-blue-100 text-blue-800;
+}
+
+.theme-customer .order-status.completed {
+  @apply bg-green-100 text-green-800;
+}
+
+.theme-customer .order-status.cancelled {
+  @apply bg-red-100 text-red-800;
+}
+
+.theme-customer .tier-badge {
+  background-color: var(--tier-badge-bg);
+  color: var(--tier-badge-text);
+  @apply px-2 py-1 rounded-full text-xs font-medium;
+}
+
+/* Dark Mode Adaptations */
+@media (prefers-color-scheme: dark) {
+  .theme-shop {
+    --theme-bg: #0f172a;
+    --theme-surface: #1e293b;
+    --theme-text: #f8fafc;
+    --theme-text-secondary: #cbd5e1;
+    --theme-border: #334155;
+  }
+
+  .theme-admin {
+    --theme-bg: #0f172a;
+    --theme-surface: #1e293b;
+    --admin-sidebar-bg: #0f172a;
+    --admin-header-bg: #1e293b;
+    --theme-text: #f8fafc;
+    --theme-text-secondary: #cbd5e1;
+    --theme-border: #334155;
+  }
+
+  .theme-customer {
+    --theme-bg: #1e1b4b;
+    --theme-surface: #312e81;
+    --theme-text: #f8fafc;
+    --theme-text-secondary: #e0e7ff;
+    --theme-border: #4c1d95;
+  }
+}
+
+/* Responsive Theme Adjustments */
+@media (max-width: 768px) {
+  .theme-admin {
+    --admin-sidebar-width: 100%;
+  }
+  
+  .theme-admin .admin-sidebar {
+    transform: translateX(-100%);
+    transition: transform var(--transition-normal);
+  }
+  
+  .theme-admin .admin-sidebar.open {
+    transform: translateX(0);
+  }
+}
+
+/* Print Styles */
+@media print {
+  .theme-admin,
+  .theme-customer,
+  .theme-shop {
+    --theme-bg: white;
+    --theme-surface: white;
+    --theme-text: black;
+    --theme-border: #ccc;
+  }
+  
+  .admin-sidebar,
+  .admin-header,
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* Focus Styles for Accessibility */
+.theme-admin *:focus,
+.theme-customer *:focus,
+.theme-shop *:focus {
+  outline: 2px solid var(--theme-primary);
+  outline-offset: 2px;
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .theme-admin,
+  .theme-customer, 
+  .theme-shop {
+    --theme-border: #000;
+    --theme-text-secondary: #000;
+  }
+  
+  .theme-admin .btn,
+  .theme-customer .btn,
+  .theme-shop .btn {
+    border-width: 2px;
+  }
+}
