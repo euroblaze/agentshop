@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, Text, Float, DateTime, Boolean, JSON, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
-from ..orm.base_model import BaseModel
+from core.orm.base_model import BaseModel
 
 
 class LLMRequest(BaseModel):

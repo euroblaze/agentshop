@@ -2,7 +2,7 @@ from typing import List, Optional, Dict, Any
 from datetime import datetime, timedelta
 from sqlalchemy import func, desc
 from sqlalchemy.orm import joinedload
-from .base_repository import BaseRepository
+from core.repositories.base_repository import BaseRepository
 from ..models.llm_models import (
     LLMRequest, LLMResponse, LLMConversation, 
     LLMConversationMessage, LLMUsageStats, LLMProviderStatus
