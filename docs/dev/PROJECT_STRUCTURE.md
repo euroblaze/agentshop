@@ -9,8 +9,8 @@ agentshop/
 ├──  new_db.sql                    # Complete database schema
 ├──  spec.md                       # Project specification
 ├──  README.md                     # Main project documentation
-├──  GROQ_INTEGRATION.md          # Groq LLM integration guide
-├──  PROJECT_STRUCTURE.md         # This file
+├──  groq_integration.md          # Groq LLM integration guide
+├──  project_structure.md         # This file
 ├──  package.json                 # Root package.json for scripts
 ├──  requirements.txt             # Python dependencies
 ├──  .env.example                 # Environment configuration template

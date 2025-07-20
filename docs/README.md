@@ -8,8 +8,8 @@ Complete documentation for AgentShop - the simplified AI agent marketplace.
 Start here if you want to contribute, customize, or understand the codebase.
 
 - [**Installation & Setup**](site_admin/installation.md) - Get AgentShop running locally
-- [**Project Structure**](dev/PROJECT_STRUCTURE.md) - Understand the simplified architecture  
-- [**API Reference**](dev/api-reference.md) - Complete API documentation
+- [**Project Structure**](dev/project_structure.md) - Understand the simplified architecture  
+- [**API Reference**](dev/api_reference.md) - Complete API documentation
 - [**Contributing Guide**](dev/contributing.md) - How to contribute to the project
 
 ### **For Site Administrators**
@@ -17,7 +17,7 @@ Essential guides for deploying and managing AgentShop in production.
 
 - [**Installation Guide**](site_admin/installation.md) - Production deployment setup
 - [**Configuration**](site_admin/configuration.md) - Environment and API configuration
-- [**LLM Provider Setup**](site_admin/llm-providers.md) - Configure AI providers
+- [**LLM Provider Setup**](site_admin/llm_providers.md) - Configure AI providers
 - [**Security Configuration**](site_admin/security.md) - Security best practices
 - [**Deployment Guide**](site_admin/deployment.md) - Production deployment
 - [**Monitoring Setup**](site_admin/monitoring.md) - System monitoring and alerts
@@ -25,7 +25,7 @@ Essential guides for deploying and managing AgentShop in production.
 ### **For End Users**
 Guides for customers using the AgentShop marketplace.
 
-- [**Getting Started**](user/getting-started.md) - Your first steps on AgentShop
+- [**Getting Started**](user/getting_started.md) - Your first steps on AgentShop
 - [**Shopping Guide**](user/shopping.md) - How to find and buy AI agents
 - [**Account Management**](user/account.md) - Managing your profile and purchases
 
@@ -35,20 +35,20 @@ Guides for customers using the AgentShop marketplace.
 docs/
 ├── README.md                    # This overview
 ├── dev/                        # Developer documentation
-│   ├── PROJECT_STRUCTURE.md    # Architecture overview
-│   ├── api-reference.md        # API endpoints
-│   ├── database-schema.md      # Database models
+│   ├── project_structure.md    # Architecture overview
+│   ├── api_reference.md        # API endpoints
+│   ├── database_schema.md      # Database models
 │   ├── contributing.md         # Contribution guidelines
 │   └── spec.md                 # Technical specifications
 ├── site_admin/                 # Admin/deployment docs
 │   ├── installation.md         # Setup and installation
 │   ├── configuration.md        # Configuration options
-│   ├── llm-providers.md        # AI provider setup
+│   ├── llm_providers.md        # AI provider setup
 │   ├── security.md            # Security configuration
 │   ├── deployment.md          # Production deployment
 │   └── monitoring.md          # Monitoring and alerts
 └── user/                      # End-user documentation
-    ├── getting-started.md     # User onboarding
+    ├── getting_started.md     # User onboarding
     ├── shopping.md           # Shopping guide
     └── account.md            # Account management
 ```
@@ -64,19 +64,19 @@ docs/
 → Read [Deployment Guide](site_admin/deployment.md)
 
 **Configure AI providers**
-→ Follow [LLM Provider Setup](site_admin/llm-providers.md)
+→ Follow [LLM Provider Setup](site_admin/llm_providers.md)
 
 **Understand the architecture**
-→ Review [Project Structure](dev/PROJECT_STRUCTURE.md)
+→ Review [Project Structure](dev/project_structure.md)
 
 **Learn how to use the marketplace**
-→ Begin with [Getting Started](user/getting-started.md)
+→ Begin with [Getting Started](user/getting_started.md)
 
 **Contribute to the project**
 → Check [Contributing Guide](dev/contributing.md)
 
 **Find API endpoints**
-→ Browse [API Reference](dev/api-reference.md)
+→ Browse [API Reference](dev/api_reference.md)
 
 **Secure my installation**
 → Follow [Security Configuration](site_admin/security.md)
