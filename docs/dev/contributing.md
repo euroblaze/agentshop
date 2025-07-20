@@ -490,7 +490,7 @@ Regular contributors may be invited to become maintainers based on:
 ### Resources
 
 - [**Project Structure**](project_structure.md) - Understand the codebase
-- [**Installation Guide**](../site_admin/installation.md) - Setup instructions
+- [**Installation Guide**](install.md) - Setup instructions
 - [**API Reference**](api_reference.md) - API documentation
 
 ---

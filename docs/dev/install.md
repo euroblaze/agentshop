@@ -1,19 +1,85 @@
 # AgentShop Installation Guide
 
-This guide provides step-by-step instructions for setting up the AgentShop development environment.
+Complete guide for installing and setting up AgentShop for development and production environments.
 
 ## Table of Contents
 
+- [Quick Installation](#quick-installation)
 - [Prerequisites](#prerequisites)
 - [System Requirements](#system-requirements)
-- [Backend Setup](#backend-setup)
-- [Frontend Setup](#frontend-setup)
+- [Manual Installation](#manual-installation)
 - [Database Configuration](#database-configuration)
 - [Environment Configuration](#environment-configuration)
 - [LLM Integration Setup](#llm-integration-setup)
 - [Running the Application](#running-the-application)
 - [Development Tools](#development-tools)
+- [Production Setup](#production-setup)
 - [Troubleshooting](#troubleshooting)
+
+## Quick Installation
+
+For rapid setup (recommended for most users):
+
+### 1. Clone Repository
+
+```bash
+git clone https://github.com/yourorg/agentshop.git
+cd agentshop
+```
+
+### 2. Install Dependencies
+
+```bash
+# Install all dependencies (frontend + backend)
+npm run install:all
+```
+
+This runs:
+- `npm install` (root dependencies)
+- `cd frontend && npm install` (React dependencies)
+- `cd backend && pip install -r requirements.txt` (Python dependencies)
+
+### 3. Environment Configuration
+
+```bash
+# Copy environment template
+cp .env.example .env
+
+# Edit configuration
+nano .env
+```
+
+**Minimum required configuration:**
+```env
+# Database
+DATABASE_URL=sqlite:///agentshop.db
+
+# Security
+SECRET_KEY=your-secret-key-change-in-production
+JWT_SECRET_KEY=your-jwt-secret-key-change-in-production
+
+# At least one LLM provider (optional)
+LLM_OPENAI_ENABLED=true
+LLM_OPENAI_API_KEY=sk-your-key-here
+```
+
+### 4. Initialize Database
+
+```bash
+# Database tables are created automatically on first run
+npm run backend:dev
+```
+
+### 5. Start Development
+
+```bash
+# Start both frontend and backend
+npm run dev
+```
+
+**Access the application:**
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:5000
 
 ## Prerequisites
 
@@ -43,90 +109,72 @@ This guide provides step-by-step instructions for setting up the AgentShop devel
 - **Storage**: 5GB+ free space
 - **CPU**: Multi-core processor
 
-## Backend Setup
+## Manual Installation
 
-### 1. Clone the Repository
+If you prefer to install components separately or need more control:
 
-```bash
-git clone https://github.com/your-org/agentshop.git
-cd agentshop
-```
-
-### 2. Create Python Virtual Environment
+### Backend Setup
 
 ```bash
-# Using venv
+cd backend
+
+# Create virtual environment
 python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 
-# Activate virtual environment
-# On Windows:
-venv\Scripts\activate
-# On macOS/Linux:
-source venv/bin/activate
-```
-
-### 3. Install Python Dependencies
-
-```bash
-# Upgrade pip
+# Install dependencies
 pip install --upgrade pip
-
-# Install requirements
-pip install -r backend/requirements.txt
-
-# Install development dependencies
-pip install -r backend/requirements-dev.txt
+pip install -r requirements.txt
 ```
 
-### 4. Backend Directory Structure
-
-After installation, your backend should look like:
-
-```
-backend/
-├── webshop/
-│   ├── api/           # Flask API controllers
-│   ├── models/        # SQLAlchemy models  
-│   ├── repositories/  # Data access layer
-│   └── services/      # Business logic
-├── services/          # LLM integration services
-├── config.py          # Configuration settings
-├── app.py            # Flask application entry
-└── requirements.txt   # Python dependencies
-```
-
-## Frontend Setup
-
-### 1. Navigate to Frontend Directory
+### Frontend Setup
 
 ```bash
 cd frontend
+
+# Install dependencies
+npm install
+# Or using yarn: yarn install
 ```
 
-### 2. Install Node.js Dependencies
+### Start Services Individually
 
 ```bash
-# Using npm
-npm install
+# Terminal 1: Backend
+cd backend
+source venv/bin/activate
+python app.py
 
-# Or using yarn
-yarn install
+# Terminal 2: Frontend  
+cd frontend
+npm run dev
 ```
 
-### 3. Frontend Directory Structure
+### Directory Structure
 
-After installation, your frontend should look like:
+After installation, your project structure should look like:
 
 ```
-frontend/
-├── src/
-│   ├── components/    # React components
-│   ├── services/      # API client services
-│   ├── types/         # TypeScript type definitions
-│   └── utils/         # Utility functions
-├── public/            # Static assets
-├── package.json       # Node.js dependencies
-└── tsconfig.json      # TypeScript configuration
+agentshop/
+├── backend/
+│   ├── controllers/     # API endpoint controllers
+│   ├── services/        # Business logic services
+│   ├── models/          # Database models
+│   ├── utils/           # Utilities (serializers, etc.)
+│   ├── security/        # Security modules
+│   ├── middleware/      # Flask middleware
+│   ├── migrations/      # Database migrations
+│   ├── app.py          # Flask application entry
+│   └── requirements.txt # Python dependencies
+├── frontend/
+│   ├── src/
+│   │   ├── components/  # React components
+│   │   ├── pages/       # Page components
+│   │   ├── services/    # API client services
+│   │   └── models/      # TypeScript models
+│   ├── package.json     # Node.js dependencies
+│   └── tsconfig.json    # TypeScript configuration
+└── .env.example         # Environment template
 ```
 
 ## Database Configuration
@@ -469,47 +517,67 @@ npm run test:coverage
 
 ### Common Issues
 
-#### 1. Database Connection Errors
+#### 1. SQLAlchemy Import Errors
 
-**Error**: `FATAL: password authentication failed`
-
-**Solution**:
-```bash
-# Check PostgreSQL user permissions
-sudo -u postgres psql -c "\du"
-
-# Reset user password
-sudo -u postgres psql -c "ALTER USER agentshop_user PASSWORD 'new_password';"
-```
-
-#### 2. Python Module Import Errors
-
-**Error**: `ModuleNotFoundError: No module named 'webshop'`
+**Error**: `ImportError: cannot import name 'BaseModel'`
 
 **Solution**:
 ```bash
-# Ensure virtual environment is activated
-source venv/bin/activate
+# Upgrade SQLAlchemy
+pip install --upgrade sqlalchemy
 
-# Install in development mode
-pip install -e backend/
+# Reinstall requirements
+pip install -r backend/requirements.txt
 ```
 
-#### 3. Frontend Build Errors
+#### 2. Node Module Issues
 
-**Error**: `Cannot resolve dependency`
+**Error**: `Cannot resolve dependency` or `Module not found`
 
 **Solution**:
 ```bash
-# Clear npm cache
-npm cache clean --force
-
-# Delete node_modules and reinstall
-rm -rf node_modules package-lock.json
-npm install
+# Clear all caches and reinstall
+rm -rf node_modules frontend/node_modules
+rm package-lock.json frontend/package-lock.json
+npm run install:all
 ```
 
-#### 4. Port Already in Use
+#### 3. Permission Issues
+
+**Error**: `Permission denied` when running scripts
+
+**Solution**:
+```bash
+# Make scripts executable
+chmod +x scripts/*.sh
+```
+
+#### 4. Database Issues
+
+**Reset database:**
+```bash
+# For SQLite (development)
+rm agentshop.db
+npm run backend:dev  # Recreates tables
+
+# For PostgreSQL
+dropdb agentshop_dev
+createdb agentshop_dev
+psql -d agentshop_dev -f new_db.sql
+```
+
+**View database:**
+```bash
+# SQLite
+sqlite3 agentshop.db
+.tables
+.schema customers
+
+# PostgreSQL
+psql -d agentshop_dev -c "\dt"
+```
+
+#### 5. Port Already in Use
 
 **Error**: `Address already in use`
 
@@ -520,10 +588,25 @@ lsof -ti:5000 | xargs kill -9
 
 # Or use different port
 export PORT=5001
-flask run --port=5001
+python app.py
 ```
 
-#### 5. LLM API Connection Issues
+#### 6. Python Virtual Environment Issues
+
+**Error**: `ModuleNotFoundError` or `command not found`
+
+**Solution**:
+```bash
+# Ensure virtual environment is activated
+source venv/bin/activate  # Linux/Mac
+# or
+venv\Scripts\activate     # Windows
+
+# Verify activation
+which python  # Should show venv path
+```
+
+#### 7. LLM API Connection Issues
 
 **Error**: `Authentication failed` or `API key invalid`
 
@@ -537,7 +620,7 @@ flask run --port=5001
 curl https://api.openai.com/v1/models \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 
-# Test Ollama
+# Test Ollama (if using local LLM)
 curl http://localhost:11434/api/version
 ```
 
@@ -594,6 +677,28 @@ flake8 backend/
 cd frontend && npm run lint
 ```
 
+## Production Setup
+
+For production deployment, see the [Deployment Guide](deployment.md) for complete instructions.
+
+### Quick Production Setup
+
+```bash
+# Set production environment
+export FLASK_ENV=production
+
+# Use production database
+export DATABASE_URL=postgresql://user:password@localhost/agentshop_prod
+
+# Build frontend for production
+cd frontend
+npm run build
+
+# Start with production server
+cd backend
+gunicorn -w 4 -b 0.0.0.0:5000 app:app
+```
+
 ## Docker Setup (Alternative)
 
 For a containerized development environment:
@@ -630,7 +735,7 @@ The `docker-compose.yml` includes:
 docker-compose build backend
 
 # Execute commands in container
-docker-compose exec backend python manage.py migrate
+docker-compose exec backend alembic upgrade head
 docker-compose exec frontend npm test
 
 # View container status

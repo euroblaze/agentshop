@@ -7,7 +7,7 @@ Complete documentation for AgentShop - the simplified AI agent marketplace.
 ### **For Developers**
 Start here if you want to contribute, customize, or understand the codebase.
 
-- [**Installation & Setup**](site_admin/installation.md) - Get AgentShop running locally
+- [**Installation & Setup**](dev/install.md) - Get AgentShop running locally
 - [**Project Structure**](dev/project_structure.md) - Understand the simplified architecture  
 - [**API Reference**](dev/api_reference.md) - Complete API documentation
 - [**Contributing Guide**](dev/contributing.md) - How to contribute to the project
@@ -15,7 +15,7 @@ Start here if you want to contribute, customize, or understand the codebase.
 ### **For Site Administrators**
 Essential guides for deploying and managing AgentShop in production.
 
-- [**Installation Guide**](site_admin/installation.md) - Production deployment setup
+- [**Installation Guide**](dev/install.md) - Development and production setup
 - [**Configuration**](site_admin/configuration.md) - Environment and API configuration
 - [**LLM Provider Setup**](site_admin/llm_providers.md) - Configure AI providers
 - [**Security Configuration**](site_admin/security.md) - Security best practices
@@ -35,13 +35,13 @@ Guides for customers using the AgentShop marketplace.
 docs/
 ├── README.md                    # This overview
 ├── dev/                        # Developer documentation
+│   ├── install.md              # Complete installation guide
 │   ├── project_structure.md    # Architecture overview
 │   ├── api_reference.md        # API endpoints
 │   ├── database_schema.md      # Database models
 │   ├── contributing.md         # Contribution guidelines
 │   └── spec.md                 # Technical specifications
 ├── site_admin/                 # Admin/deployment docs
-│   ├── installation.md         # Setup and installation
 │   ├── configuration.md        # Configuration options
 │   ├── llm_providers.md        # AI provider setup
 │   ├── security.md            # Security configuration
@@ -58,7 +58,7 @@ docs/
 ### **I want to...**
 
 **Set up AgentShop for development**
-→ Start with [Installation Guide](site_admin/installation.md)
+→ Start with [Installation Guide](dev/install.md)
 
 **Deploy AgentShop to production** 
 → Read [Deployment Guide](site_admin/deployment.md)
