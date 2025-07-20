@@ -8,20 +8,10 @@ from flask_jwt_extended import jwt_required, get_jwt_identity, verify_jwt_in_req
 from typing import Dict, Any, List, Optional
 import logging
 
-# Import core API components
-try:
-    from ..core.api.base_controller import BaseController, handle_api_errors, get_paginated_results
-    from ..core.api.response_serializer import ResponseSerializer
-    from ..core.validation.validators import validate_required_fields, ValidationError
-    from ..services.webshop.cart_service import CartService
-    from ..models.cart_models import CartItem
-except ImportError:
-    # Fallback for import issues during development
-    from core.api.base_controller import BaseController, handle_api_errors, get_paginated_results
-    from core.api.response_serializer import ResponseSerializer
-    from core.validation.validators import validate_required_fields, ValidationError
-    from services.webshop.cart_service import CartService
-    from models.cart_models import CartItem
+from .base_controller import BaseController, handle_exceptions, auth_required
+from ..services.cart_service import CartService
+from ..utils.serializers import CartItemSerializer
+from ..models.cart_models import CartItem
 
 logger = logging.getLogger(__name__)
 

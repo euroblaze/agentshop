@@ -12,16 +12,15 @@ from flask_jwt_extended import (
 from datetime import timedelta
 import logging
 
-from .base_controller import BaseController, handle_service_errors, rate_limit
-from ...services.customer_service import CustomerService, CustomerSessionService
-from ...services.admin_service import AdminUserService, AdminSessionService
-from ..utils.validators import validate_email, validate_password_strength
-from ..utils.exceptions import ValidationError, AuthenticationError
+from .base_controller import BaseController, handle_exceptions, auth_required, admin_required
+from ..services.customer_service import CustomerService
+from ..services.admin_service import AdminUserService
+from ..utils.serializers import CustomerSerializer, AdminUserSerializer
 
 logger = logging.getLogger(__name__)
 
-# Create blueprint
-auth_bp = Blueprint('auth', __name__)
+# Create blueprint with API prefix
+auth_bp = Blueprint('auth', __name__, url_prefix='/api/auth')
 
 
 class AuthController(BaseController):

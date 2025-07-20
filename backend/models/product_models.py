@@ -10,7 +10,10 @@ from typing import Dict, Any, List, Optional
 import json
 from enum import Enum
 
-from core.orm.base_model import BaseModel, SoftDeleteMixin
+try:
+    from ..core.orm.base_model import BaseModel, SoftDeleteMixin
+except ImportError:
+    from core.orm.base_model import BaseModel, SoftDeleteMixin
 
 
 class PriceType(Enum):

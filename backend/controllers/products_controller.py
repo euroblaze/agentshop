@@ -9,20 +9,14 @@ from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 import logging
 from typing import Dict, Any
 
-from .base_controller import (
-    BaseController, require_auth, require_admin, 
-    handle_service_errors, rate_limit
-)
-from ...services.product_service import (
-    ProductService, ProductCategoryService, 
-    ProductReviewService, ProductInquiryService
-)
-from ..utils.serializers import ProductSerializer, ProductCategorySerializer
+from .base_controller import BaseController, handle_exceptions, auth_required, admin_required
+from ..services.product_service import ProductService
+from ..utils.serializers import ProductSerializer
 
 logger = logging.getLogger(__name__)
 
-# Create blueprint
-products_bp = Blueprint('products', __name__)
+# Create blueprint with API prefix
+products_bp = Blueprint('products', __name__, url_prefix='/api/products')
 
 
 class ProductsController(BaseController):

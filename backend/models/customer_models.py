@@ -12,7 +12,10 @@ import secrets
 from datetime import datetime, timedelta
 import re
 
-from core.orm.base_model import BaseModel, SoftDeleteMixin
+try:
+    from ..core.orm.base_model import BaseModel, SoftDeleteMixin
+except ImportError:
+    from core.orm.base_model import BaseModel, SoftDeleteMixin
 
 
 class Customer(BaseModel, SoftDeleteMixin):

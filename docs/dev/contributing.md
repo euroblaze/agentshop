@@ -489,9 +489,9 @@ Regular contributors may be invited to become maintainers based on:
 
 ### Resources
 
-- [**Project Structure**](PROJECT_STRUCTURE.md) - Understand the codebase
+- [**Project Structure**](project_structure.md) - Understand the codebase
 - [**Installation Guide**](../site_admin/installation.md) - Setup instructions
-- [**API Reference**](api-reference.md) - API documentation
+- [**API Reference**](api_reference.md) - API documentation
 
 ---
 

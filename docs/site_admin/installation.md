@@ -160,7 +160,7 @@ python scripts/create_admin.py
 
 ## Next Steps
 
-1. **Configure LLM Providers:** [LLM Provider Setup](llm-providers.md)
+1. **Configure LLM Providers:** [LLM Provider Setup](llm_providers.md)
 2. **Set up Security:** [Security Configuration](security.md)
 3. **Deploy to Production:** [Deployment Guide](deployment.md)
 

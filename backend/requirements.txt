@@ -1,0 +1,24 @@
+# Flask and Core Dependencies
+Flask==2.3.3
+Flask-CORS==4.0.0
+Flask-JWT-Extended==4.5.2
+
+# Database
+SQLAlchemy==2.0.21
+Alembic==1.12.0
+psycopg2-binary==2.9.7
+
+# Security
+bcrypt==4.0.1
+redis==5.0.0
+
+# Utilities
+python-dotenv==1.0.0
+requests==2.31.0
+
+# Email
+Flask-Mail==0.9.1
+
+# Development
+pytest==7.4.0
+pytest-flask==1.2.0

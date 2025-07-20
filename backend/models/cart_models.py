@@ -8,13 +8,13 @@ from sqlalchemy.orm import relationship
 from datetime import datetime, timezone
 
 try:
-    from ..orm.base_model import BaseModel
+    from ..core.orm.base_model import BaseModel
     from .customer_models import Customer
-    from .webshop_models import Product
+    from .product_models import Product
 except ImportError:
-    from orm.base_model import BaseModel
+    from core.orm.base_model import BaseModel
     from models.customer_models import Customer
-    from models.webshop_models import Product
+    from models.product_models import Product
 
 
 class CartItem(BaseModel):

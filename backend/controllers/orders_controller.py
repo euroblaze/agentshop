@@ -7,17 +7,14 @@ from flask import Blueprint, request
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 import logging
 
-from .base_controller import (
-    BaseController, require_auth, require_admin, 
-    handle_service_errors, rate_limit
-)
-from ...services.order_service import OrderService, OrderItemService, PaymentService
+from .base_controller import BaseController, handle_exceptions, auth_required, admin_required
+from ..services.order_service import OrderService
 from ..utils.serializers import OrderSerializer, OrderItemSerializer, PaymentSerializer
 
 logger = logging.getLogger(__name__)
 
-# Create blueprint
-orders_bp = Blueprint('orders', __name__)
+# Create blueprint with API prefix
+orders_bp = Blueprint('orders', __name__, url_prefix='/api/orders')
 
 
 class OrdersController(BaseController):

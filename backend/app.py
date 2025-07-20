@@ -9,6 +9,16 @@ from .api.llm_config_endpoints import llm_config_bp
 from .middleware.error_handler import setup_error_handling
 import os
 
+# Import security components
+try:
+    from .middleware.security_middleware import SecurityMiddleware
+    from .security.auth_security import SecurityHeaders
+    import redis
+    SECURITY_AVAILABLE = True
+except ImportError as e:
+    print(f"Warning: Security components not available: {e}")
+    SECURITY_AVAILABLE = False
+
 # Import webshop blueprints
 try:
     from .controllers.auth_controller import auth_bp
@@ -31,7 +41,11 @@ def create_app():
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev-secret-key-change-in-production')
     app.config['DATABASE_URL'] = os.getenv('DATABASE_URL', 'sqlite:///agentshop.db')
     app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', app.config['SECRET_KEY'])
-    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = False  # For development, disable token expiry
+    # JWT Security Configuration
+    from datetime import timedelta
+    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=1)  # 1 hour expiry
+    app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(days=7)  # 7 days for refresh
+    app.config['REDIS_URL'] = os.getenv('REDIS_URL', 'redis://localhost:6379')
     
     # CORS configuration
     cors_origins = os.getenv('CORS_ORIGINS', 'http://localhost:3000,http://localhost:5173').split(',')
@@ -39,6 +53,15 @@ def create_app():
     
     # Initialize JWT
     jwt = JWTManager(app)
+    
+    # Initialize security middleware
+    if SECURITY_AVAILABLE:
+        try:
+            redis_client = redis.Redis.from_url(app.config['REDIS_URL'])
+            security_middleware = SecurityMiddleware(app, redis_client)
+            print("Security middleware initialized successfully")
+        except Exception as e:
+            print(f"Warning: Could not initialize security middleware: {e}")
     
     # Setup error handling
     setup_error_handling(app)
