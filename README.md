@@ -133,11 +133,11 @@ REDIS_URL=redis://localhost:6379
 # CORS
 CORS_ORIGINS=http://localhost:3000,http://localhost:5173
 
-# Email (optional)
-MAIL_SERVER=smtp.gmail.com
+# Email (optional - using Brevo)
+MAIL_SERVER=smtp-relay.brevo.com
 MAIL_PORT=587
-MAIL_USERNAME=your-email@gmail.com
-MAIL_PASSWORD=your-app-password
+MAIL_USERNAME=your-brevo-login@example.com
+MAIL_PASSWORD=your-brevo-smtp-key
 ```
 
 ## 🛡️ Security Features

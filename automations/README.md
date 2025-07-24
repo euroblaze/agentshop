@@ -69,9 +69,9 @@ npm start
 # Add to your .env file
 SCOUP_BASE_URL=http://localhost:3001
 SCOUP_API_KEY=your_api_key_here
-NOTIFICATION_EMAIL_SMTP_HOST=smtp.gmail.com
-NOTIFICATION_EMAIL_USER=your_email@gmail.com
-NOTIFICATION_EMAIL_PASS=your_app_password
+NOTIFICATION_EMAIL_SMTP_HOST=smtp-relay.brevo.com
+NOTIFICATION_EMAIL_USER=your-brevo-login@example.com
+NOTIFICATION_EMAIL_PASS=your-brevo-smtp-key
 ```
 
 ### 3. Start the Automation Scheduler

@@ -114,11 +114,11 @@ RATE_LIMIT_PER_MINUTE=100
 LOG_LEVEL=INFO
 LOG_FILE=/opt/agentshop/logs/agentshop.log
 
-# Email (configure SMTP)
-SMTP_HOST=smtp.yourdomain.com
+# Email (configure SMTP with Brevo)
+SMTP_HOST=smtp-relay.brevo.com
 SMTP_PORT=587
-SMTP_USERNAME=noreply@yourdomain.com
-SMTP_PASSWORD=your-smtp-password
+SMTP_USERNAME=your-brevo-login@example.com
+SMTP_PASSWORD=your-brevo-smtp-key
 ```
 
 ### 5. Process Management with PM2

@@ -153,11 +153,11 @@ FRONTEND_URL=http://localhost:5173
 ### Email Configuration
 
 ```env
-# SMTP settings for email notifications
-SMTP_HOST=smtp.gmail.com
+# SMTP settings for email notifications (using Brevo)
+SMTP_HOST=smtp-relay.brevo.com
 SMTP_PORT=587
-SMTP_USERNAME=your-email@gmail.com
-SMTP_PASSWORD=your-app-password
+SMTP_USERNAME=your-brevo-login@example.com
+SMTP_PASSWORD=your-brevo-smtp-key
 SMTP_USE_TLS=true
 
 # Email sender details

@@ -54,7 +54,7 @@ class EmailNotifier:
     def _load_config_from_env(self) -> EmailConfig:
         """Load email configuration from environment variables"""
         return EmailConfig(
-            smtp_host=os.getenv('NOTIFICATION_EMAIL_SMTP_HOST', 'localhost'),
+            smtp_host=os.getenv('NOTIFICATION_EMAIL_SMTP_HOST', 'smtp-relay.brevo.com'),
             smtp_port=int(os.getenv('NOTIFICATION_EMAIL_SMTP_PORT', '587')),
             username=os.getenv('NOTIFICATION_EMAIL_USER', ''),
             password=os.getenv('NOTIFICATION_EMAIL_PASS', ''),

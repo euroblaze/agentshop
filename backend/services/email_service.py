@@ -22,7 +22,7 @@ class EmailService:
     """Service for handling email operations"""
     
     def __init__(self):
-        self.smtp_server = os.getenv('SMTP_SERVER', 'localhost')
+        self.smtp_server = os.getenv('SMTP_SERVER', 'smtp-relay.brevo.com')
         self.smtp_port = int(os.getenv('SMTP_PORT', '587'))
         self.smtp_user = os.getenv('SMTP_USER', '')
         self.smtp_password = os.getenv('SMTP_PASSWORD', '')

@@ -303,12 +303,12 @@ JWT_SECRET_KEY=your-jwt-secret-key-change-this-in-production
 JWT_ACCESS_TOKEN_EXPIRES=86400  # 24 hours
 JWT_REFRESH_TOKEN_EXPIRES=2592000  # 30 days
 
-# Email Configuration (for notifications)
-MAIL_SERVER=smtp.gmail.com
+# Email Configuration (for notifications with Brevo)
+MAIL_SERVER=smtp-relay.brevo.com
 MAIL_PORT=587
 MAIL_USE_TLS=true
-MAIL_USERNAME=your-email@gmail.com
-MAIL_PASSWORD=your-app-password
+MAIL_USERNAME=your-brevo-login@example.com
+MAIL_PASSWORD=your-brevo-smtp-key
 
 # File Upload Configuration
 UPLOAD_FOLDER=uploads
